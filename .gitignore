@@ -1,10 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-ecosystem_mindmap_MySQL/backend/node_modules
-ecosystem_mindmap_MySQL/backend/dist
-ecosystem_mindmap_MySQL/node_modules
-ecosystem_mindmap_MySQL/.history
+backend/node_modules
+backend/dist
+backend/yarn-lock
+node_modules
+.history
+node_modules
+
 
 /.pnp
 .pnp.js
@@ -23,6 +26,8 @@ ecosystem_mindmap_MySQL/.history
 .env.test.local
 .env.production.local
 
-ecosystem_mindmap_MySQL/npm-debug.log*
-ecosystem_mindmap_MySQL/yarn-debug.log*
-ecosystem_mindmap_MySQL/yarn-error.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn-lock*
+

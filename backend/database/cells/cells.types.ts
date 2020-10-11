@@ -1,34 +1,34 @@
 import { Document, Model } from 'mongoose';
 
 export interface ICellSchema {
-    title: string;
+    title: any;
     description: string;
     position: number;
-    idStemCell: string;
-    stemCell: boolean;
+    idStemCell: any;
+    stemCell?: boolean;
 };
 
 export interface ICell {
-    _id: string;
+    id: any;
     title: string;
     description: string;
     position: number;
-    idStemCell: string;
-    stemCell: boolean;
+    idStemCell: any;
+    stemCell?: boolean;
 };
 
 export interface INewCell {
     request_type: string;
     error:boolean;
     message?: string;
-    cell_created?: ICell;
+    cell_created?: any;
 };
 
 export interface IGetCells {
     request_type: string;
     error:boolean;
     message?: any;
-    cells_Request?: ICell[];
+    cells_Request?: any;
 };
 
 export interface IGetCellByPropsId {

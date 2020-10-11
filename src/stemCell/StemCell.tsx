@@ -73,7 +73,7 @@ export const StemCell: React.FC<StemCellProps> = ({
     // Fuction, set variable updateStemCell when a user leaves an input field (textfield).
     const handleOnBlur = () => {
         setUpdateStemCell({
-            _id: stemCellProps._id,
+            id: stemCellProps.id,
             title: title,
             description: description,
             position: stemCellProps.position,

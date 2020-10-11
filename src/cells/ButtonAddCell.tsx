@@ -81,7 +81,7 @@ export const ButtonAddCell: React.FC<CellProps> = ({
                    title: title, 
                    description: description, 
                    position: 2,
-                   idStemCell: stemCellProps[0]._id,
+                   idStemCell: stemCellProps[0].id,
                    stemCell: false
                });
        } else {

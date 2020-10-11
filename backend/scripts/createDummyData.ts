@@ -1,5 +1,5 @@
 import  {CellModel}  from '../database/cells/cells.model';
-import { Connect, disconnect } from '../database/database';
+//import { Connect, disconnect } from '../database/database';
 
 (async () => {
     //Connect();  
@@ -15,7 +15,7 @@ import { Connect, disconnect } from '../database/database';
         console.log(`Created user ${testCell.title}`);
       }
 
-      disconnect();
+      //disconnect();
     } catch (e) {
       console.log(e);
     }

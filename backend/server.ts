@@ -1,5 +1,5 @@
 import express from 'express';
-import { Connect } from './database/database';
+import { DatabaseConnection } from './database/database';
 import http from 'http';
 import socketio from 'socket.io';
 import { getEcoSystemByStemCellId, getCellByProps_Id, createDefaultStemCell,
@@ -8,12 +8,12 @@ import { getEcoSystemByStemCellId, getCellByProps_Id, createDefaultStemCell,
 import { ICell, ICellSchema} from './database/cells/cells.types';
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 6000;
 
 app.use(express.json());
 
 // --------- Database -----------
-Connect('CellsMindMap');
+DatabaseConnection();
 // ------------------------------
 
 // Socket.io --------------------
@@ -78,7 +78,7 @@ io.on('connection', async (socket) => {
 
     socket.on('test',
         async () => {
-            Connect('UnitTestCellsMindMap');
+            
             console.log('test database')
         }
     )

@@ -11,12 +11,13 @@ import { ButtonAddCell } from '../cells/ButtonAddCell';
 import './MindMapBuilder.css';
 import { ENDPOINT } from '../localhost';
 import { WidthSvgViewBox, HeightSvgViewBox } from '../svg-setting';
+import { ContactSupportOutlined } from '@material-ui/icons';
 
 // ---------------------------------------------------------------------------------------
 // Object Mindmap while waiting for the "Mind Map library" page.
 // --------------------------------------------------------------------------------------- 
 const mindMap: MindMap[] = [{
-    _id: 'af46d28s',
+    id: '0',
     title: 'Mind map DEV',
     description: 'This is the mindmap DEV for build the code',
     active: true,
@@ -35,7 +36,7 @@ export const MindMapBuilder: React.FC = () => {
     const [svgViewBoxProps] = useState(`0 0 ${widthSvgViewBox} ${heightSvgViewBox}`);
 
     // State variable
-    const [mainStemCellId] = useState(mindMap[0]._id);
+    const [mainStemCellId] = useState(mindMap[0].id);
     const [cells, setCells] = useState<Cell[]>([]);
     const [stemCell, setStemCell] = useState<StemCell[]>([]);
     const [refresh, setRefresh] = useState<number>(1);
@@ -62,11 +63,11 @@ export const MindMapBuilder: React.FC = () => {
                     if (data.stemCellOfEcosystem.cells_Request.length === 0) {
                         socket.emit('create default stem cell', mainStemCellId, (data: any) => {
                             setStemCell([data.cell_created]);
-                            setParentTree([data.cell_created._id]);
+                            setParentTree([data.cell_created.id]);
                         });
                     } else {
                             setStemCell(data.stemCellOfEcosystem.cells_Request);
-                            setParentTree([data.stemCellOfEcosystem.cells_Request[0]._id]);
+                            setParentTree([data.stemCellOfEcosystem.cells_Request[0].id]);
                             setCells(data.cellsOfEcosystem.cells_Request);
                     };
                 });
@@ -84,7 +85,7 @@ export const MindMapBuilder: React.FC = () => {
         if(refresh > 1) {
             try {
                 const socket = io.connect(ENDPOINT);
-                    socket.emit('get ecosystem', stemCell[0]?._id, false ,  (data:any) => {
+                    socket.emit('get ecosystem', stemCell[0]?.id, false ,  (data:any) => {
                         setStemCell(data.stemCellOfEcosystem.cell_Request);
                         setCells(data.cellsOfEcosystem.cells_Request);
                     });
@@ -107,13 +108,14 @@ export const MindMapBuilder: React.FC = () => {
     // Function, moves the clicked cell to the center of the mind map. (cell becomes like a stem cell.)
     const doubleClick =  async (cell:StemCell) => {
         setStemCell([cell]);
-        await addStemCellToParentTree(cell._id);
+        //console.log(cell);
+        await addStemCellToParentTree(cell.id);
         await refreshEcosystem();
     };
 
     // Function, return to the parent stem cell and refresh the mind map.
     const returnPreviousStemCell = async  () => {
-        if (stemCell[0].idStemCell === mindMap[0]._id) {
+        if (stemCell[0].idStemCell === mindMap[0].id) {
             await getEcosystemToFirstConnection();
             await refreshEcosystem();
         } else {
@@ -138,6 +140,7 @@ export const MindMapBuilder: React.FC = () => {
 
     // test database
     const testDatabase = async () => {
+        console.log('test database')
         const socket = io.connect(ENDPOINT);
         socket.emit('test', () => {
             console.log('test data base.')
@@ -150,6 +153,7 @@ export const MindMapBuilder: React.FC = () => {
     
     // Stem cell element. This element is the cell at the center of the mind map.
     const listStemCell = () => {
+        //console.log(stemCell);
         if (stemCell[0]) {
             return stemCell.map((currentStemCell: StemCell) => { 
                 return <StemCell
@@ -164,6 +168,7 @@ export const MindMapBuilder: React.FC = () => {
 
     // Cells elements. These element are the cells around the center cell of the mind map.
     const listCells = () => {
+        //console.log(cells);
         return cells.map((currentCell: Cell) => {
              return <Cells
                     key={currentCell.position}

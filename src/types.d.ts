@@ -1,15 +1,16 @@
-type MindMap = {_id: string;
+type MindMap = {
+    id: any;
     title: string;
     description: string;
     active: boolean;
 }
 
 type Cell = {
-    _id?: string;
+    id?: any;
     title: string  | undefined;
     description: string | undefined;
     position: number;
-    idStemCell: string;
+    idStemCell: any;
     stemCell: boolean;
 };
 
@@ -17,16 +18,16 @@ type SchemaCell = {
     title: string;
     description: string;
     position: number;
-    idStemCell: string;
+    idStemCell: any;
     stemCell: boolean;
 };
 
 type StemCell = {
-    _id: string;
+    id: any;
     title: string;
     description: string;
     position: number;
-    idStemCell: string;
+    idStemCell: any;
     stemCell: boolean;
 };
 
@@ -36,7 +37,7 @@ type HeightViewBox = number;
 type PositionId = number;
 type Localhost = string;
 type title = string;
-type _id = string;
+type id = any;
 type WidtSvgViewBox = number;
 type HeightSvgViewBox = number;
 type OriginX = number;

@@ -1,10 +1,10 @@
-import { Connect } from '../database/database';
-//import { addCellHierarchy } from '../database/cells/cells.methods'
+
 
 
 (async () => {
 
-  Connect('UnitTestCellsMindMap')
+  
+
 
 })();
 
