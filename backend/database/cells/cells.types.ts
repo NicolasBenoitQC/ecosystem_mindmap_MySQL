@@ -1,5 +1,32 @@
 import { Document, Model } from 'mongoose';
 
+export interface IElement {
+    ID?: number;
+    TITLE: String;
+    DESCRIPTION: String;
+    POSITION: number;
+    PARENT_ID: number;
+    INTERVAL_INPUT: number;
+    INTERVAL_OUTPUT: number;
+    TREE_LEVEL: number;
+    FILE_ID: number;
+};
+
+export interface IInsertedElement {
+    request_type: string;
+    error:boolean;
+    message_error?: any;
+    inserted_element?: any;
+};
+
+export interface IDeletedElement {
+    request_type: string;
+    error:boolean;
+    message_error?: any;
+    deleted_element?: any;
+};
+
+
 export interface ICellSchema {
     title: any;
     description: string;

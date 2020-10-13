@@ -44,12 +44,12 @@ export const MindMapBuilder: React.FC = () => {
     
     // Effect during the first connection.
     useEffect( () => {
-        getEcosystemToFirstConnection();
+        //getEcosystemToFirstConnection();
     },[]);
 
     // Effect to actualize cells.
     useEffect(() => {
-        getEcosystemToActualize();
+        //getEcosystemToActualize();
     },[refresh]);
 
 /* -------------------------------------------------------------------------------------------------
@@ -140,11 +140,10 @@ export const MindMapBuilder: React.FC = () => {
 
     // test database
     const testDatabase = async () => {
-        console.log('test database')
         const socket = io.connect(ENDPOINT);
-        socket.emit('test', () => {
-            console.log('test data base.')
-        })
+        socket.emit('test', (data:any) => {
+            console.log(data);
+        }) 
     }
 
 /* ---------------------------------------------------------------------------------------------------

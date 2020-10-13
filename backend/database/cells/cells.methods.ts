@@ -6,7 +6,7 @@ import { INewCell, IGetCells, ICell, IGetCellByPropsId,IgetEcoSystemByStemCellId
 
 // Local file.
 import { CellModel, ParentsTreeOfTheCellModel } from './cells.model';
-import { newCell, getCellsByPropsIdStemCell, newParentsTreeOfTheCell, 
+import { newCell, getCellsByPropsIdStemCell, 
         getAllIdOfChildCells, deleteAllChildrenCellsOfTheCellDeleted,
         deleteAllParentsTreesOfTheCellDeleted, getCellByPositionAndIdStemCell,
         updatePositionOfTheCellById
@@ -20,7 +20,7 @@ import { DbConnection } from '../database';
     Function also used in socket.io communication.
 unit test _ done. 
 
-convert to MySql done ------------------------*/
+okkkkkkkkkkkkkkkkkkkkkkkkkkk ------------------------*/
 export async function getCellByProps_Id (id: any): Promise<any> {
     
     const requestType = 'Get cell by _id';
@@ -57,7 +57,7 @@ export async function getCellByProps_Id (id: any): Promise<any> {
             - the second, to define the next level of the ecosystem, the origine is the id an stem cell.  
 unit test _ done. 
 
-convert to MySql done ------------------------*/
+okkkkkkkkkkkkkkk ------------------------*/
 export async function getEcoSystemByStemCellId (stemCell_id: any, parentIsMindMap: boolean): Promise<IgetEcoSystemByStemCellId> {
     
     //const requestType = 'Get ecosystem, to define stem cell & cells.';
@@ -110,7 +110,7 @@ export async function getEcoSystemByStemCellId (stemCell_id: any, parentIsMindMa
     If the mind map is empty this function is call.
 unit test _ done. 
 
-convert to MySql done ------------------------*/
+okkkkkkkk ------------------------*/
 export async function createDefaultStemCell (stemCellId: number): Promise<INewCell> {
     
     const createDefaultStemCell: INewCell = await newCell(
@@ -129,7 +129,7 @@ export async function createDefaultStemCell (stemCellId: number): Promise<INewCe
     Add parent tree of the cell added.
 unit test _ done. 
 
-convert to MySql done ------------------------*/
+okkkkkkkkkkkkkkk ------------------------*/
 export async function addCell (cell: ICellSchema, parentTree: string[]): Promise<any> {
     
     const cells: IGetCells = await getCellsByPropsIdStemCell(cell.idStemCell);

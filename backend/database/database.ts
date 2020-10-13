@@ -1,6 +1,6 @@
 import mysql from 'mysql';
 import dotenv from 'dotenv';
-import {getAllCells, getCellsByPropsIdStemCell, newCell,updatePropsCellById} from './cells/cells.methodss';
+//import {getAllCells, getCellsByPropsIdStemCell, newCell,updatePropsCellById} from './cells/cells.methodss';
 
 dotenv.config();
 

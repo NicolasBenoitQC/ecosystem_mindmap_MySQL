@@ -6,6 +6,9 @@ import { getEcoSystemByStemCellId, getCellByProps_Id, createDefaultStemCell,
         addCell, updatePropsCellById, deleteCellAndAllChilds,
          } from './database/cells/cells.methods';
 import { ICell, ICellSchema} from './database/cells/cells.types';
+//import { deleteElementInTree, insertElementInTree } from './database/cells/cells.helpers.methods';
+import { updateIntervalInput } from './database/elements/elements.helpers.methods';
+//import { IElement } from './database/elements/elements.types';
 
 const app = express();
 const port = process.env.PORT || 6000;
@@ -77,9 +80,30 @@ io.on('connection', async (socket) => {
     );
 
     socket.on('test',
-        async () => {
+        async (fn) => {
+            /* const element: IElement = {
+                ID: 12,
+                TITLE:'title2.2 insert',
+                DESCRIPTION: 'insert test',
+                POSITION: 4,
+                PARENT_ID: 3,
+                INTERVAL_INPUT: 8,
+                INTERVAL_OUTPUT: 9,
+                TREE_LEVEL: 2,
+                FILE_ID: 111,
+            }; */
+
+            /* const insertElement: any= await insertNewElement(element);
+            fn(insertElement); */
+            //console.log(insertElement)
             
-            console.log('test database')
+            /* const deleteElem: IDeletedElements = await deleteElementByID(element.ID);
+            fn(deleteElem); 
+            console.log(deleteElem) */
+
+            const update = await updateIntervalInput(8,'-');
+            fn(update);
+            console.log(update);
         }
     )
 });
