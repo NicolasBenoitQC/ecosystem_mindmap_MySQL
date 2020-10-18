@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 
 // interface typing.
 import { IDeletedElements, IElement, IInsertedElement,
-    IUpdateIntervalInput, IUpdateIntervalOutput, IGetElementsList,
-    IGetElement,   
+    IUpdatedIntervalsInput, IUpdatedIntervalsOutput, IGetElementsList,
+    IupdatedPositionOfTheElements
 } from './elements.types';
 
 // local file.
@@ -70,21 +70,28 @@ export const insertNewElement = async (element: IElement): Promise<IInsertedElem
 };
 
 /* 
-    Delete element by id in the databse.
+    Delete elements and all children.
 */
-export const deleteElementByID = async (elementID: number): Promise<IDeletedElements> => {
+export const deleteElementsBetweenIntervalInputAndOutput = async (
+    elementIntervalInput: number,
+    elementIntervalOutput: number,
+    elementFileID: number): Promise<IDeletedElements> => {
     const requestDescription = `
-        Delete element by id.
-        Argument 'elementID' passed : ${elementID}.              
+        Delete element between interval input and output.
+        Argument 'elementIntervalInput' passed : ${elementIntervalInput}.
+        Argument 'elementIntervalOutput' passed : ${elementIntervalOutput}.
+        Argument 'elementFileID' passed : ${elementFileID}             
         `;
 
     try {
         const response = await new Promise((resolve,reject) => {
             const query:string =    `DELETE FROM ${process.env.TABLE_ELEMENT}
-                                    WHERE ID = ?
+                                    WHERE INTERVAL_INPUT >= ?
+                                        AND INTERVAL_OUTPUT <= ?
+                                        AND FILE_ID = ?
                                     `;
             
-            DbConnection.query(query,[elementID],(err, results) => {
+            DbConnection.query(query,[elementIntervalInput, elementIntervalOutput, elementFileID ],(err, results) => {
                 if (err) reject(new Error(err.message));
                 resolve(results);
             }); 
@@ -112,21 +119,26 @@ export const deleteElementByID = async (elementID: number): Promise<IDeletedElem
     This function is used when the function of inserting or deleting an element is used.
     This updates the interval tree for items that follow the inserted or deleted item.
 */
-export const updateIntervalInput = async (  intervalInputReferentNumber: number, 
-                                            decreaseOrIncrease: string): Promise<IUpdateIntervalInput> => {
+export const updateIntervalsInput = async (  intervalInputReferentNumber: number,
+                                            fileID: number,
+                                            numberReferenceForDecrease: number, 
+                                            decreaseOrIncrease: string): Promise<IUpdatedIntervalsInput> => {
     const requestDescription: string = `
         Update to decrease or increase INTERVAL_INPUT. 
         Argument 'intervalInputReferentNumber' passed : ${intervalInputReferentNumber}.
+        Argument 'fileID' passed : ${fileID}.
+        Argument 'numberReferenceForDecrease' passed : ${numberReferenceForDecrease}.
         Argument 'decreaseOrIncrease' passed : ${decreaseOrIncrease} .
         `;
 
     try {
         const response = await new Promise((resolve, reject) => {
             const query:string =    `UPDATE ${process.env.TABLE_ELEMENT}
-                                    SET INTERVAL_INPUT = INTERVAL_INPUT ${decreaseOrIncrease} 2
-                                    WHERE INTERVAL_INPUT >= ?`;
-
-            DbConnection.query(query,[intervalInputReferentNumber],
+                                    SET INTERVAL_INPUT = INTERVAL_INPUT ${decreaseOrIncrease} ${numberReferenceForDecrease}
+                                    WHERE INTERVAL_INPUT >= ?
+                                        AND FILE_ID = ?`;
+                                        
+            DbConnection.query(query,[intervalInputReferentNumber, fileID],
                 (err, results) => {
                     if (err) reject(new Error(err.message));
                     resolve(results);
@@ -155,21 +167,27 @@ export const updateIntervalInput = async (  intervalInputReferentNumber: number,
     This function is used when the function of inserting or deleting an element is used.
     This updates the interval tree for items that follow the inserted or deleted item.
 */
-export const updateIntervalOutput = async ( intervalOutputReferentNumber: number,
-                                            decreaseOrIncrease: string): Promise<IUpdateIntervalOutput> => {
+export const updateIntervalsOutput = async ( intervalINputReferentNumber: number,
+                                            fileID: number,
+                                            numberReferenceForDecrease: number,
+                                            decreaseOrIncrease: string): Promise<IUpdatedIntervalsOutput> => {
     const requestDescription: string = `
         Update to decrease or increase INTERVAL_OUTPUT. 
-        Argument 'intervalOutputReferentNumber' passed : ${intervalOutputReferentNumber}.
+        Argument 'intervalINputReferentNumber' passed : ${intervalINputReferentNumber}.
+        Argument 'fileID' passed : ${fileID}.
+        Argument 'numberReferenceForDecrease' passed : ${numberReferenceForDecrease}.
         Argument 'decreaseOrIncrease' passed : ${decreaseOrIncrease} .
         `;
 
     try {
+        console.log(intervalINputReferentNumber);
         const response = await new Promise((resolve, reject) => {
             const query:string =    `UPDATE ${process.env.TABLE_ELEMENT}
-                                    SET INTERVAL_OUTPUT = INTERVAL_OUTPUT ${decreaseOrIncrease} 2
-                                    WHERE INTERVAL_OUTPUT >= ?`;
+                                    SET INTERVAL_OUTPUT = INTERVAL_OUTPUT ${decreaseOrIncrease} ${numberReferenceForDecrease}
+                                    WHERE INTERVAL_OUTPUT >= ?
+                                        AND FILE_ID = ?`;
 
-            DbConnection.query(query,[intervalOutputReferentNumber],
+            DbConnection.query(query,[intervalINputReferentNumber, fileID],
                 (err, results) => {
                     if (err) reject(new Error(err.message));
                     resolve(results);
@@ -194,19 +212,21 @@ export const updateIntervalOutput = async ( intervalOutputReferentNumber: number
 /* 
     Get the element(s) list by PARENT_ID.
 */
-export const getElementsListByParentID = async (parentID: number): Promise<IGetElementsList> => {
+export const getElementsListByParentID = async (parentID: number, fileID: number): Promise<IGetElementsList> => {
 
     const requestDescription = `
         Get element(s) list by PARENT_ID.
         Argument 'parentID' passed : ${parentID}.
+        Argument 'fileID' passed : ${fileID}.
         `;
 
     try {
-        const response = await new Promise((resolve, reject) => {
+        const response: IElement[] = await new Promise((resolve, reject) => {
             const query =   `SELECT * FROM ${process.env.TABLE_ELEMENT} 
-                            WHERE PARENT_ID = ?`;
+                            WHERE PARENT_ID = ?
+                                AND FILE_ID = ?`;
 
-            DbConnection.query(query, [parentID], (err, results) => {
+            DbConnection.query(query, [parentID, fileID], (err, results) => {
                 if (err) reject(new Error(err.message));
                 resolve(results);
             });
@@ -229,7 +249,7 @@ export const getElementsListByParentID = async (parentID: number): Promise<IGetE
 /* 
     Get the element by POSITION and PARENT_ID.
 */
-export const getElementByPositionAndParentID = async (position: number, parentID: number): Promise<IGetElement> => {
+/* export const getElementByPositionAndParentID = async (position: number, parentID: number): Promise<IGetElement> => {
     const requestDescription: string = `
         Get the element by POSITION and PARENT_ID.
         Argument 'position' passed : ${position}.
@@ -261,5 +281,49 @@ export const getElementByPositionAndParentID = async (position: number, parentID
         }
     }
     
-};
+}; */
 
+/* 
+    Update position of the elements
+    This function is use when one element is created or deleted to adjust the position in the UI circle.
+*/
+export const updatePositionOfTheElements = async (
+        elementReferent: IElement,
+        decreaseOrIncrease: string,
+        ): Promise<IupdatedPositionOfTheElements> => {
+    const requestDescription: string = `
+        Update position of the element by ID.
+        Argument 'elementReferent' passed : ${elementReferent}.
+        Argument 'decreaseOrIncrease' passed : ${decreaseOrIncrease}.
+    `;
+
+    try {
+        const response = await new Promise((resolve, reject) => {
+            const query: string =   `UPDATE ${process.env.TABLE_ELEMENT}
+                                    SET POSITION = POSITION ${decreaseOrIncrease} 2
+                                    WHERE PARENT_ID = ?
+                                        AND POSITION >= ?
+                                        AND FILE_ID = ?`;
+
+            DbConnection.query(query,
+                [elementReferent.PARENT_ID, elementReferent.POSITION, elementReferent.FILE_ID],
+                (err, results) => {
+                if (err) reject(new Error(err.message));
+                resolve(results);
+            });
+        });
+
+        return {
+            request_description: requestDescription,
+            error: false,
+            update_position_of_the_elements: response,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            request_description: requestDescription,
+            error: true,
+            message_error: error,
+        };
+    };
+};

@@ -1,47 +1,47 @@
-// package
+/* // package
 import 'mocha';
 import { expect } from 'chai';
 
 // Local file
 import { UnitTestDatabaseConnection } from '../database/database';
-import { CellModel, ParentsTreeOfTheCellModel } from '../database/cells/cells.model';
-import { getCellByProps_Id } from '../database/cells/cells.methods';
-import {getCellsByPropsIdStemCell, newCell, 
-        newParentsTreeOfTheCell, getAllIdOfChildCells, 
-        deleteAllChildrenCellsOfTheCellDeleted,
-        deleteAllParentsTreesOfTheCellDeleted,
-                            } from '../database/cells/cells.helpers.methods';
-import { ICell } from '../database/cells/cells.types';
+import { ElementModel, ParentsTreeOfTheElementModel } from '../database/elements/elements.model';
+import { getElementByProps_Id } from '../database/elements/elements.methods';
+import {getElementsByPropsIdStemElement, newElement, 
+        newParentsTreeOfTheElement, getAllIdOfChildElements, 
+        deleteAllChildrenElementsOfTheElementDeleted,
+        deleteAllParentsTreesOfTheElementDeleted,
+                            } from '../database/elements/elements.helpers.methods';
+import { IElement } from '../database/elements/elements.types';
 import { deleteAllRow } from './helpers';
 
 const _id_MindMap = 0;
 let parentsArray:string[];
 
-let stemCell: ICell = {
+let stemElement: IElement = {
     id: '',
-    title: 'Stem Cell _ unit test',
-    description: 'description Stem Cell _ unit test',
+    title: 'Stem Element _ unit test',
+    description: 'description Stem Element _ unit test',
     position: 0,
-    //stemCell: true,
-    idStemCell: _id_MindMap,
+    //stemElement: true,
+    idStemElement: _id_MindMap,
 };
 
-let cell1: ICell = {
+let element1: IElement = {
     id: '',
-    title: 'Cell 1 _ unit test',
-    description: 'description Cell 1 _ unit test',
+    title: 'Element 1 _ unit test',
+    description: 'description Element 1 _ unit test',
     position: 2,
-    //stemCell: false,
-    idStemCell: stemCell.id,
+    //stemElement: false,
+    idStemElement: stemElement.id,
 };
 
-let cell2: ICell = {
+let element2: IElement = {
     id: '',
-    title: 'Cell 2 _ unit test',
-    description: 'description Cell 2 _ unit test',
+    title: 'Element 2 _ unit test',
+    description: 'description Element 2 _ unit test',
     position: 4,
-    //stemCell: false,
-    idStemCell: stemCell.id,
+    //stemElement: false,
+    idStemElement: stemElement.id,
 };
 
 describe('Helpers methods of communication with the database.', async () => {
@@ -54,82 +54,82 @@ describe('Helpers methods of communication with the database.', async () => {
         await deleteAllRow();
     });
 
-    it.only('Create new cell in database', async () => {
-        const result = await newCell(
-                                        stemCell.title, stemCell.description, 
-                                        stemCell.position, stemCell.idStemCell
+    it.only('Create new element in database', async () => {
+        const result = await newElement(
+                                        stemElement.title, stemElement.description, 
+                                        stemElement.position, stemElement.idStemElement
                                     );
                                     
-        expect(result.cell_created.serverStatus).to.equal(2);
+        expect(result.element_created.serverStatus).to.equal(2);
         
-        // update stemCell after expect.
-        stemCell = result.cell_created;
+        // update stemElement after expect.
+        stemElement = result.element_created;
     });
 
-    it.skip('Create parent tree of the cell in database', async () => {
-        const createCell = await newCell(
-                                            cell1.title, cell1.description, 
-                                            cell1.position, stemCell.id
+    it.skip('Create parent tree of the element in database', async () => {
+        const createElement = await newElement(
+                                            element1.title, element1.description, 
+                                            element1.position, stemElement.id
                                         );
-        cell1 = createCell.cell_created;
-        parentsArray = [stemCell.id];
+        element1 = createElement.element_created;
+        parentsArray = [stemElement.id];
 
-        const result = await newParentsTreeOfTheCell( parentsArray , cell1.id);
+        const result = await newParentsTreeOfTheElement( parentsArray , element1.id);
         expect(result.error).to.equal(false);
-        expect(result.parents_tree.parentsIdList[0]).to.equal(`${stemCell.id}`);
-        expect(result.parents_tree.cellLevel).to.equal(parentsArray.length)
-        expect(result.parents_tree.cellId).to.equal(`${cell1.id}`);
+        expect(result.parents_tree.parentsIdList[0]).to.equal(`${stemElement.id}`);
+        expect(result.parents_tree.elementLevel).to.equal(parentsArray.length)
+        expect(result.parents_tree.elementId).to.equal(`${element1.id}`);
     });
 
-    it('Get cell(s) by idStemCell', async () => {
-        const result = await getCellsByPropsIdStemCell(stemCell.id);
+    it('Get element(s) by idStemElement', async () => {
+        const result = await getElementsByPropsIdStemElement(stemElement.id);
         expect(result.error).to.equal(false);
-        expect(result.cells_Request[0]._id).to.eql(cell1.id);
-        expect(result.cells_Request[0].title).to.equal(cell1.title);
-        expect(result.cells_Request[0].description).to.equal(cell1.description);
-        expect(result.cells_Request[0].position).to.equal(cell1.position);
-        expect(result.cells_Request[0].idStemCell).to.equal(cell1.idStemCell);              
-        //expect(result.cells_Request[0].stemCell).to.equal(cell1.stemCell);
+        expect(result.elements_Request[0]._id).to.eql(element1.id);
+        expect(result.elements_Request[0].title).to.equal(element1.title);
+        expect(result.elements_Request[0].description).to.equal(element1.description);
+        expect(result.elements_Request[0].position).to.equal(element1.position);
+        expect(result.elements_Request[0].idStemElement).to.equal(element1.idStemElement);              
+        //expect(result.elements_Request[0].stemElement).to.equal(element1.stemElement);
     });
 
-    it('Get all the cells by idStemCell', async () => {
-        const createCell = await newCell(
-                                            cell2.title, cell2.description, 
-                                            cell2.position, stemCell.id
+    it('Get all the elements by idStemElement', async () => {
+        const createElement = await newElement(
+                                            element2.title, element2.description, 
+                                            element2.position, stemElement.id
         );
 
-        cell2 = createCell.cell_created;
+        element2 = createElement.element_created;
 
-        await newParentsTreeOfTheCell( [`${stemCell.id}`] , `${createCell.cell_created._id}`);
+        await newParentsTreeOfTheElement( [`${stemElement.id}`] , `${createElement.element_created._id}`);
 
-        const result = await getCellsByPropsIdStemCell(`${stemCell.id}`);
-        expect(result.cells_Request.length).to.equal(2); 
+        const result = await getElementsByPropsIdStemElement(`${stemElement.id}`);
+        expect(result.elements_Request.length).to.equal(2); 
     });
 
-    it('Get the cell by _id', async () => {
-        const result = await getCellByProps_Id(`${stemCell.id}`);
-        expect(result.cell_Request[0].title).to.equal('Stem Cell _ unit test');
+    it('Get the element by _id', async () => {
+        const result = await getElementByProps_Id(`${stemElement.id}`);
+        expect(result.element_Request[0].title).to.equal('Stem Element _ unit test');
     });
 
     it.skip('Get all document which contains the id in the parensIdList property', async () => {
-        const result = await getAllIdOfChildCells(`${stemCell.id}`);
+        const result = await getAllIdOfChildElements(`${stemElement.id}`);
         expect(result.parents_tree.length).to.equal(2);
     });
 
-    it.skip('Delete all children cells of the cell deleted.', async () => {
+    it.skip('Delete all children elements of the element deleted.', async () => {
 
-        const childrenIdList = await getAllIdOfChildCells(`${stemCell.id}`);
-        await deleteAllChildrenCellsOfTheCellDeleted(childrenIdList);
+        const childrenIdList = await getAllIdOfChildElements(`${stemElement.id}`);
+        await deleteAllChildrenElementsOfTheElementDeleted(childrenIdList);
 
-        const result = await getCellByProps_Id(childrenIdList.parents_tree[0].cellId);
-        expect(result.cell_Request.length).to.equal(0);
+        const result = await getElementByProps_Id(childrenIdList.parents_tree[0].elementId);
+        expect(result.element_Request.length).to.equal(0);
     });
     
-    it.skip('Delete all parents trees of the children cells of the cell deleted.', async () => {
-        const childrenIdList = await getAllIdOfChildCells(`${stemCell.id}`);
-        await deleteAllParentsTreesOfTheCellDeleted(childrenIdList);
+    it.skip('Delete all parents trees of the children elements of the element deleted.', async () => {
+        const childrenIdList = await getAllIdOfChildElements(`${stemElement.id}`);
+        await deleteAllParentsTreesOfTheElementDeleted(childrenIdList);
 
-        const result = await ParentsTreeOfTheCellModel.find({_id: childrenIdList.parents_tree[0]._id})
+        const result = await ParentsTreeOfTheElementModel.find({_id: childrenIdList.parents_tree[0]._id})
         expect(result.length).to.equal(0);
     });
-});
+}); */

@@ -1,4 +1,4 @@
-.container-cell-title {
+.container-element-title {
     width: 100%;
     height: 100%;
     display: flex;
@@ -16,7 +16,7 @@
 }
 
 
-.cell-title {
+.element-title {
     display: flex;
     text-align: center;
     align-items: center;
@@ -43,21 +43,21 @@
     cursor: pointer;
 }
 
-.cell-title:hover {
+.element-title:hover {
     border-radius: 60%;
     opacity: 0.5;
 }
 
 
-.cell-title:visited {
+.element-title:visited {
     color: black;
 }
 
-.cellsLayer:hover {
+.elementsLayer:hover {
     cursor:pointer;
 }
 
-.add-cells-texte{
+.add-elements-texte{
     font-size: 3px;
     color: black;
     text-anchor: middle;

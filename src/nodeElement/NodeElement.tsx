@@ -9,45 +9,46 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { IElement } from '../elements.client.types'
 
 // Local file
-import './StemCell.css';
+import './NodeElement.css';
 import { ENDPOINT } from '../localhost';
 import { OriginX, OriginY, WidthSvgViewBox } from '../svg-setting';
 
-// Typing of the properties of the stem cell component.
-interface StemCellProps {
-    stemCellProps: StemCell,
-    refreshCells: any,
-    returnPreviousStemCellProps: any;
+// Typing of the properties of the stem element component.
+interface NodeElementProps {
+    nodeElementProps: IElement,
+    refreshNodeAndBranches: any,
+    returnPreviousNodeElementProps: any;
 };
 
 // ---------------------------------------------------------------------------------------
-// Stem cell component. This element generate the cell in the center of the mind map. 
+// Node element component. This element generate the element in the center of the mind map. 
 // ---------------------------------------------------------------------------------------
-export const StemCell: React.FC<StemCellProps> = ({
-                stemCellProps, refreshCells, returnPreviousStemCellProps,
+export const NodeElement: React.FC<NodeElementProps> = ({
+        nodeElementProps, refreshNodeAndBranches, returnPreviousNodeElementProps,
     }) => {
 
-    // setting of the stem cell.
+    // setting of the stem element.
     const originX = OriginX;
     const originY = OriginY;
-    const stemCellRadius = (WidthSvgViewBox/2) / 8;
+    const nodeElementRadius = (WidthSvgViewBox/2) / 8;
     const radiusAxisRotation = (WidthSvgViewBox/2) / 4;
-    const widthTitleField = stemCellRadius * 2;
-    const heightTitleField = stemCellRadius * 2;
+    const widthTitleField = nodeElementRadius * 2;
+    const heightTitleField = nodeElementRadius * 2;
 
     // State variable.
-    const [updateStemCell, setUpdateStemCell] = useState(stemCellProps);
-    const [title, setTitle] = useState(stemCellProps.title);
-    const [description, setDescription] = useState(stemCellProps.description);
+    const [updateNodeElement, setUpdateNodeElement] = useState(nodeElementProps);
+    const [title, setTitle] = useState(nodeElementProps.TITLE);
+    const [description, setDescription] = useState(nodeElementProps.DESCRIPTION);
     const [open, setOpen] = useState<boolean>(false);
 
 /* -------------------------------------------------------------------------------------------------
     ----- Function ---------------------------------------------------------------------------------     
 ---------------------------------------------------------------------------------------------------- */
  
-    // Function, open dialog when stem cell is double clicked.
+    // Function, open dialog when stem element is double clicked.
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -70,15 +71,18 @@ export const StemCell: React.FC<StemCellProps> = ({
         setDescription(event.target.value);
     };
 
-    // Fuction, set variable updateStemCell when a user leaves an input field (textfield).
+    // Fuction, set variable updateNodeElement when a user leaves an input field (textfield).
     const handleOnBlur = () => {
-        setUpdateStemCell({
-            id: stemCellProps.id,
-            title: title,
-            description: description,
-            position: stemCellProps.position,
-            idStemCell: stemCellProps.idStemCell,
-            stemCell: stemCellProps.stemCell
+        setUpdateNodeElement({
+            ID: nodeElementProps.ID,
+            TITLE: title,
+            DESCRIPTION: description,
+            POSITION: nodeElementProps.POSITION,
+            PARENT_ID: nodeElementProps.PARENT_ID,
+            INTERVAL_INPUT: nodeElementProps.INTERVAL_INPUT,
+            INTERVAL_OUTPUT: nodeElementProps.INTERVAL_OUTPUT,
+            TREE_LEVEL: nodeElementProps.TREE_LEVEL,
+            FILE_ID: nodeElementProps.FILE_ID,
         });
     };
     
@@ -86,20 +90,20 @@ export const StemCell: React.FC<StemCellProps> = ({
     const saveEditing = async (event:any) => {
         event.preventDefault();
         const socket = io.connect(ENDPOINT);
-        socket.emit('update props cell', updateStemCell, async (data:any) => {
-            await refreshCells()
+        socket.emit('update_props_element', updateNodeElement, async () => {
+            await refreshNodeAndBranches()
             await handleClose(); 
         });    
     };
 
-    // Function, removes the stem cell and all children associated with that stem cell.
-    // if the stem cell is the main stem cell all is deleled and the main stem cell default is created.
-    const deleteCell = async (event:any) => {
+    // Function, removes the stem element and all children associated with that stem element.
+    // if the stem element is the main stem element all is deleled and the main stem element default is created.
+    const deleteElement = async (event:any) => {
         event.preventDefault();
         const socket = io.connect(ENDPOINT);
-        socket.emit('delete cell and all child', stemCellProps , async (data:any) => {
+        socket.emit('delete_element_and_all_child', nodeElementProps , async () => {
             await handleClose(); 
-            await returnPreviousStemCellProps();
+            await returnPreviousNodeElementProps();
         });
         
     }
@@ -109,28 +113,28 @@ export const StemCell: React.FC<StemCellProps> = ({
 ------------------------------------------------------------------------------------------------------ */
     return (
         <svg>
-            <circle className='stem-cell'
+            <circle className='node-element'
                 cx={originX}
                 cy={originY}
-                r={stemCellRadius}
+                r={nodeElementRadius}
                 stroke='white'
                 strokeWidth='0.3'
                 fill='gray'
             />
             <foreignObject
-                x={originX - stemCellRadius}
-                y={originY - stemCellRadius}
+                x={originX - nodeElementRadius}
+                y={originY - nodeElementRadius}
                 width={widthTitleField}
                 height={heightTitleField}
                 fontSize='15%' 
                 >
-                <div className='container-stem-cell-title' >
-                    <div className='stem-cell-title'>
-                        {stemCellProps.title}
+                <div className='container-node-element-title' >
+                    <div className='node-element-title'>
+                        {nodeElementProps.TITLE}
                     </div>
                 </div>
             </foreignObject>
-            <circle className='axis-of-rotation-of-cells'
+            <circle className='axis-of-rotation-of-element'
                 cx={originX}
                 cy={originY}
                 r={radiusAxisRotation}
@@ -138,10 +142,10 @@ export const StemCell: React.FC<StemCellProps> = ({
                 stroke='white'
                 strokeWidth='0.1'
             />
-            <circle className='stem-cell'
+            <circle className='node-element'
                 cx={originX}
                 cy={originY}
-                r={stemCellRadius}
+                r={nodeElementRadius}
                 fillOpacity='0'
                 onDoubleClick={handleClickOpen}
             />
@@ -155,7 +159,7 @@ export const StemCell: React.FC<StemCellProps> = ({
                             <TextField
                                 id='filled-basic'
                                 label='Title'
-                                defaultValue={stemCellProps.title}
+                                defaultValue={nodeElementProps.TITLE}
                                 onChange={handleChangeTitle}
                                 InputLabelProps={{shrink: true}}
                                 onBlur={handleOnBlur}
@@ -165,7 +169,7 @@ export const StemCell: React.FC<StemCellProps> = ({
                             <TextField
                                 id='filled-basic'
                                 label='Description' 
-                                defaultValue={stemCellProps.description}                
+                                defaultValue={nodeElementProps.DESCRIPTION}                
                                 onChange={handleChangeDescription}        
                                 fullWidth
                                 multiline
@@ -181,7 +185,7 @@ export const StemCell: React.FC<StemCellProps> = ({
                         <Button onClick={handleClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={deleteCell} color="primary">
+                        <Button onClick={deleteElement} color="primary">
                             Delete
                         </Button>
                         <Button onClick={saveEditing} color="primary">

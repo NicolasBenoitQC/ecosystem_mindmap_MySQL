@@ -2,13 +2,18 @@ import express from 'express';
 import { DatabaseConnection } from './database/database';
 import http from 'http';
 import socketio from 'socket.io';
-import { getEcoSystemByStemCellId, getCellByProps_Id, createDefaultStemCell,
-        addCell, updatePropsCellById, deleteCellAndAllChilds,
-         } from './database/cells/cells.methods';
-import { ICell, ICellSchema} from './database/cells/cells.types';
-//import { deleteElementInTree, insertElementInTree } from './database/cells/cells.helpers.methods';
-import { updateIntervalInput } from './database/elements/elements.helpers.methods';
-//import { IElement } from './database/elements/elements.types';
+import {getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
+    getNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
+    getElementByID, updatePropsElementByID, deleteElementAndAllChild,
+    createTheOriginalElement, createElement
+} from './database/elements/elements.methods'
+import { IElement,IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
+    IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
+    IGetElement, IUpdatedElements, IDeleteElementAndAllChild,
+    ICreateTheOriginalElement, ICreateElement,
+ } from './database/elements/elements.types';
+
+//import { updateIntervalsInput, updateIntervalsOutput } from './database/elements/elements.helpers.methods'
 
 const app = express();
 const port = process.env.PORT || 6000;
@@ -25,85 +30,97 @@ const io = socketio(server);
 
 io.on('connection', async (socket) => {
 
-    socket.on('get ecosystem',
-        async (stemCell_id: string, parentIsMindMap: boolean, fn) => {
-            const ecosystem = await getEcoSystemByStemCellId(stemCell_id, parentIsMindMap);
-            await fn(ecosystem);
-
-            //console.log(ecosystem)
-        }
-    );
-
-    socket.on('get cell by _id', 
-        async (idCell: string, fn) => {
-            const cell = await getCellByProps_Id(idCell);
-            await fn(cell);
-        
-            //console.log(cell);
-        }
-    );
-
-    socket.on('create default stem cell', 
-        async (stemCellId, fn) => {     
-            const defaultStemCell = await createDefaultStemCell(stemCellId);  
-            await fn(defaultStemCell);
+    socket.on('get_node_and_its_branches_level_zero_of_the_tree_structure',
+        async (parentID: number, fileID: number, fn) => {
+            const nodeAndItsBranches: IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure = 
+                await getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure(parentID, fileID);
+            await fn(nodeAndItsBranches);
             
-            //console.log(defaultStemCell);
+            //console.log(nodeAndItsBranches)
         }
     );
 
-    socket.on('add cell', 
-        async (cell:ICellSchema, parentTree: string[], fn) => {
-            const newCell = await addCell(cell, parentTree);
-            await fn(newCell);
+    socket.on('get_node_and_its_branches_from_level_greater_than_zero_of_the_tree_structure',
+        async (fileID: number, elementID: number, fn) => {
+            const nodeAndItsBranches: IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure = 
+                await getNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure(elementID, fileID);
+            await fn(nodeAndItsBranches);
 
-            //console.log(newCell)
+            //console.log(nodeAndItsBranches)
+        }
+    );
+
+
+    socket.on('get_element_by_ID', 
+        async (elementID: number, fn) => {
+            const element: IGetElement = await getElementByID(elementID);
+            await fn(element);
+        
+            //console.log(element);
+        }
+    );
+
+    socket.on('create_the_original_element', 
+        async (fileID: number, fn) => {     
+            const originalElement: ICreateTheOriginalElement = await createTheOriginalElement(fileID);  
+            await fn(originalElement);
+            
+            //console.log(originalElement);
+        }
+    );
+
+    socket.on('create_new_element', 
+        async (element: IElement, fn) => {
+            const createdElement: ICreateElement = await createElement(element);
+            await fn(createdElement);
+
+            //console.log(createdElement)
         }      
     );
 
-    socket.on('update props cell', 
-        async (cellUpdated:ICell, fn) => {            
-            const updatePropsCell =  await updatePropsCellById(cellUpdated);
-            fn(updatePropsCell);
+    socket.on('update_props_element', 
+        async (elementUpdated: IElement, fn) => {            
+            const updatePropsElement: IUpdatedElements =  await updatePropsElementByID(elementUpdated);
+            fn(updatePropsElement);
             
-            //console.log(updatePropsCell);
+            //console.log(updatePropsElement);
         }
     );
 
-    socket.on('delete cell and all child', 
-        async (cell: ICell, fn) => {
-            const deleteCells = await deleteCellAndAllChilds(cell);
-            fn(deleteCells);
+    socket.on('delete_element_and_all_child', 
+        async (element: IElement, fn) => {
+            const deleteElements: IDeleteElementAndAllChild = await deleteElementAndAllChild(element);
+            fn(deleteElements);
 
-            //console.log(deleteCells)
+            //console.log(deleteElements)
         }
     );
 
     socket.on('test',
         async (fn) => {
-            /* const element: IElement = {
-                ID: 12,
-                TITLE:'title2.2 insert',
-                DESCRIPTION: 'insert test',
-                POSITION: 4,
-                PARENT_ID: 3,
-                INTERVAL_INPUT: 8,
-                INTERVAL_OUTPUT: 9,
-                TREE_LEVEL: 2,
+             /* const element: IElement = {
+                ID: 47,
+                TITLE:'title0',
+                DESCRIPTION: '',
+                POSITION: 0,
+                PARENT_ID: 0,
+                INTERVAL_INPUT: 20,
+                INTERVAL_OUTPUT: 25,
+                TREE_LEVEL: 0,
                 FILE_ID: 111,
-            }; */
+            };
 
-            /* const insertElement: any= await insertNewElement(element);
-            fn(insertElement); */
+             const insertElement: any= await insertNewElement(element);
+            fn(insertElement);
             //console.log(insertElement)
             
-            /* const deleteElem: IDeletedElements = await deleteElementByID(element.ID);
+            
+            const deleteElem = await deleteElementAndAllChild(element);
             fn(deleteElem); 
-            console.log(deleteElem) */
-
-            const update = await updateIntervalInput(8,'-');
+            console.log(deleteElem)
+            const update = await updateIntervalsOutput(20, 111, '-');
             fn(update);
-            console.log(update);
+            console.log(update); */
         }
     )
 });

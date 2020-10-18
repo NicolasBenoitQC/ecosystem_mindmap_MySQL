@@ -1,6 +1,5 @@
 import mysql from 'mysql';
 import dotenv from 'dotenv';
-//import {getAllCells, getCellsByPropsIdStemCell, newCell,updatePropsCellById} from './cells/cells.methodss';
 
 dotenv.config();
 
@@ -20,10 +19,6 @@ export const DatabaseConnection = async () => {
             console.log(err.message);
         };
         console.log(`Database ${process.env.DATABASE} is ${DbConnection.state}`);
-        //getAllCells();
-        //getCellsByPropsIdStemCell(1);
-        //newCell('Nico', 'test insert row', 4, 1);
-        //updatePropsCellById({id:3,title:'Nicolas',description: 'ttdydc fff',position:4,idStemCell:1})
     })
 }
 

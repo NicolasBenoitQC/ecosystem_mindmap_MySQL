@@ -1,12 +1,5 @@
-export const WidthSvgViewBox: WidtSvgViewBox = 100;
-export const HeightSvgViewBox: HeightSvgViewBox = 40;
+export const WidthSvgViewBox: number = 100;
+export const HeightSvgViewBox: number = 40;
 
-export const OriginX: OriginX = WidthSvgViewBox/2;
-export const OriginY: OriginY = HeightSvgViewBox/2;  
-
-/* 
-export const WidthSvgViewBox: WidtSvgViewBox = 100;
-export const HeightSvgViewBox: HeightSvgViewBox = 70;
-export const OriginX: OriginX = WidthSvgViewBox/2;
-export const OriginY: OriginY = HeightSvgViewBox/2; 
-*/
+export const OriginX: number = WidthSvgViewBox/2;
+export const OriginY: number = HeightSvgViewBox/2;  

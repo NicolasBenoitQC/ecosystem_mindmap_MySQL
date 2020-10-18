@@ -9,8 +9,8 @@ ETS_mindmap : Element Trees Structures, mindmap.
 Current version : 
 
 This project is a tool for building a cartography of a set of elements (set of elements = virtual ecosystem).
-An ecosystem is made up of a mother cell interconnected with its children.
-Each child cell can itself become a mother cell which will also be accompanied by its child cells.
+An ecosystem is made up of a mother element interconnected with its children.
+Each child element can itself become a mother element which will also be accompanied by its child elements.
 
 Futur version :
 

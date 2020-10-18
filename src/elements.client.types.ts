@@ -49,14 +49,14 @@ export interface IGetElementsList {
     request_description: string;
     error:boolean;
     message_error?: any;
-    elements_list?: IElement[];
+    elements_list?: any;
 };
 
 export interface IGetElement {
     request_description: string;
     error:boolean;
     message_error?: any;
-    element?: IElement[];
+    element?: any;
 };
 
 export interface IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure {
@@ -72,15 +72,6 @@ export interface IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructur
     error:boolean;
     message_error?: any;
     node?: IGetElement
-    branches?: IGetElementsList;
-};
-
-
-export interface IGetNodeAndItsBranches {
-    request_description: string;
-    error:boolean;
-    message_error?: any;
-    node?: IGetElementsList | IGetElement;
     branches?: IGetElementsList;
 };
 

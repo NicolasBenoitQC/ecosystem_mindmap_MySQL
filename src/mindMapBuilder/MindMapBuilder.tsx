@@ -2,25 +2,32 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
+// interface typing
+import { IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
+    IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
+    IElement, IGetElement, ICreateTheOriginalElement,
+    } from '../elements.client.types';
+import { IMindMap } from '../mindMap.type';
+
 // Component React
-import { StemCell } from '../stemCell/StemCell';
-import { Cells } from '../cells/Cells';
-import { ButtonAddCell } from '../cells/ButtonAddCell';
+import { NodeElement } from '../nodeElement/NodeElement';
+import { Element } from '../element/Element';
+import { ButtonAddElement } from '../element/ButtonAddElement';
 
 // Local file
 import './MindMapBuilder.css';
 import { ENDPOINT } from '../localhost';
 import { WidthSvgViewBox, HeightSvgViewBox } from '../svg-setting';
-import { ContactSupportOutlined } from '@material-ui/icons';
+
 
 // ---------------------------------------------------------------------------------------
 // Object Mindmap while waiting for the "Mind Map library" page.
 // --------------------------------------------------------------------------------------- 
-const mindMap: MindMap[] = [{
-    id: '0',
-    title: 'Mind map DEV',
-    description: 'This is the mindmap DEV for build the code',
-    active: true,
+const mindMapSelected: IMindMap[] = [{
+    ID: 111,
+    TITLE: 'Mind map DEV',
+    DESCRIPTION: 'This is the mindmap DEV for build the code',
+    STATUS: 0,
 }];
 // _______________________________________________________________________________________
 // _______________________________________________________________________________________
@@ -36,62 +43,74 @@ export const MindMapBuilder: React.FC = () => {
     const [svgViewBoxProps] = useState(`0 0 ${widthSvgViewBox} ${heightSvgViewBox}`);
 
     // State variable
-    const [mainStemCellId] = useState(mindMap[0].id);
-    const [cells, setCells] = useState<Cell[]>([]);
-    const [stemCell, setStemCell] = useState<StemCell[]>([]);
+    const [mindMapSelectedID] = useState(mindMapSelected[0].ID);
+    const [elements, setElements] = useState<IElement[]>([]);
+    const [nodeElement, setNodeElement] = useState<IElement[]>([]);
     const [refresh, setRefresh] = useState<number>(1);
-    const [parentTree, setParentTree] = useState<any[]>([]);
     
     // Effect during the first connection.
     useEffect( () => {
-        //getEcosystemToFirstConnection();
+        getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure();
     },[]);
 
-    // Effect to actualize cells.
+    // Effect to actualize elements.
     useEffect(() => {
-        //getEcosystemToActualize();
+        getNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure();
     },[refresh]);
 
 /* -------------------------------------------------------------------------------------------------
     ----- Function ---------------------------------------------------------------------------------     
 ---------------------------------------------------------------------------------------------------- */
-    // Function, generate the ecosystem of cells of the selected mind map during the first connection.
-    const getEcosystemToFirstConnection =  async () => {
+    // Get node and its branches from level zero of the tree structure.
+    const getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure =  async () => {
         try {
             const socket = io.connect(ENDPOINT);
-                socket.emit('get ecosystem', mainStemCellId, true , (data:any) => {
-                    if (data.stemCellOfEcosystem.cells_Request.length === 0) {
-                        socket.emit('create default stem cell', mainStemCellId, (data: any) => {
-                            setStemCell([data.cell_created]);
-                            setParentTree([data.cell_created.id]);
-                        });
+                socket.emit('get_node_and_its_branches_level_zero_of_the_tree_structure',
+                                0, 
+                                mindMapSelectedID ,
+                                (data: IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure) => {
+                    //console.log(data);           
+                    
+                    if (data.node?.elements_list?.length === 0) {
+                        
+                            socket.emit('create_the_original_element', mindMapSelectedID,
+                                (data: ICreateTheOriginalElement) => {
+                                    originalElementCreated();
+                                    console.log(data);
+                            });
+                        
+                        
                     } else {
-                            setStemCell(data.stemCellOfEcosystem.cells_Request);
-                            setParentTree([data.stemCellOfEcosystem.cells_Request[0].id]);
-                            setCells(data.cellsOfEcosystem.cells_Request);
+                        setNodeElement(data.node?.elements_list);
+                        setElements(data.branches?.elements_list);
+                        //console.log(data.node?.elements_list[0])
                     };
                 });
         } catch (error) {
             console.log({
-                request_type: 'function get ecosystem to first connection. TRY / CATCH',
+                request_type: 'function get ecosystem to first connection.',
                 error: true,
                 message: error,
             });
         };
     };
 
-    // Function, refresh the ecosystem of cells to actualize the mind map.
-    const getEcosystemToActualize = async () => {
+    // Get the elements of level 0 from the tree structure.
+    const getNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure = async () => {
         if(refresh > 1) {
             try {
                 const socket = io.connect(ENDPOINT);
-                    socket.emit('get ecosystem', stemCell[0]?.id, false ,  (data:any) => {
-                        setStemCell(data.stemCellOfEcosystem.cell_Request);
-                        setCells(data.cellsOfEcosystem.cells_Request);
+                    socket.emit('get_node_and_its_branches_from_level_greater_than_zero_of_the_tree_structure', 
+                                nodeElement[0]?.FILE_ID,
+                                nodeElement[0]?.ID,  
+                                (data:IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure) => {
+                                    setNodeElement(data.node?.element);
+                                    setElements(data.branches?.elements_list);
+                                    //console.log(data);
                     });
             } catch (error) {
                 console.log({
-                    request_type: 'function get ecosystem to Actualize. TRY / CATCH',
+                    request_type: 'function get ecosystem to Actualize.',
                     error: true,
                     message: error,
                 });
@@ -100,108 +119,103 @@ export const MindMapBuilder: React.FC = () => {
         
     };
 
-    // Function, modify the variable 'refresh' to active the useEffect and refresh the cells.
-    const refreshEcosystem =  async () => {
+    // Function use when orginal element is created in the function getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure.
+    const originalElementCreated = async () => {
+        await getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure();
+    };
+
+    // Modify the variable 'refresh' to active the useEffect and refresh the node and branches.
+    const refreshNodeAndBranches =  async () => {
         setRefresh(refresh+1);
     };
 
-    // Function, moves the clicked cell to the center of the mind map. (cell becomes like a stem cell.)
-    const doubleClick =  async (cell:StemCell) => {
-        setStemCell([cell]);
-        //console.log(cell);
-        await addStemCellToParentTree(cell.id);
-        await refreshEcosystem();
+    // Moves the clicked element to the center of the mind map. (element becomes like a node element.)
+    const doubleClick =  async (elementSelected:IElement) => {
+        setNodeElement([elementSelected]);
+        await refreshNodeAndBranches();
     };
 
-    // Function, return to the parent stem cell and refresh the mind map.
-    const returnPreviousStemCell = async  () => {
-        if (stemCell[0].idStemCell === mindMap[0].id) {
-            await getEcosystemToFirstConnection();
-            await refreshEcosystem();
+    // Go back one level.
+    const returnPreviousNodeElement = async  () => {
+        if (nodeElement[0].PARENT_ID === 0) {
+            await getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure();
+            await refreshNodeAndBranches();
         } else {
             const socket = io.connect(ENDPOINT);
-            socket.emit('get cell by _id', stemCell[0].idStemCell,  async (data:any) => {
-                setStemCell(data.cell_Request);
-                await removeStemCellToParentTree();
-                await refreshEcosystem();
+            socket.emit('get_element_by_ID', nodeElement[0].PARENT_ID,  async (data:IGetElement) => {
+                setNodeElement(data.element);
+                await refreshNodeAndBranches();
             }) 
         }
-    }
-
-    // Function, when function double click is activate the cell id is save in the variable 'parentTree' 
-    const addStemCellToParentTree = async (id:string) => {
-        parentTree.push(id);      
     };
 
-    // Function, when button 'Previous stem cell' is activate the stem cell id is remove in the variable 'parentTree'.
-    const removeStemCellToParentTree =  async () => {
-        parentTree.pop();
-    };
+    /* const increaseLevel = async () => {1
+        setLevel = Level + 
+    } */
 
     // test database
-    const testDatabase = async () => {
+    const buttonTest = async () => {
+        console.log(elements)
         const socket = io.connect(ENDPOINT);
         socket.emit('test', (data:any) => {
             console.log(data);
-        }) 
-    }
+        })
+    } 
 
 /* ---------------------------------------------------------------------------------------------------
     ----- Elements ------------------------------------------------------------------------------------     
 ------------------------------------------------------------------------------------------------------ */
     
-    // Stem cell element. This element is the cell at the center of the mind map.
-    const listStemCell = () => {
-        //console.log(stemCell);
-        if (stemCell[0]) {
-            return stemCell.map((currentStemCell: StemCell) => { 
-                return <StemCell
-                            key={currentStemCell?.position}
-                            stemCellProps={currentStemCell}
-                            refreshCells={refreshEcosystem}
-                            returnPreviousStemCellProps={returnPreviousStemCell}
+    // Node element element. This element is the element at the center of the mind map.
+    const listNodeElement = () => {
+        //console.log(nodeElement[0]);
+        if (nodeElement[0]) {
+            return nodeElement.map((currentNodeElement: IElement) => { 
+                return <NodeElement
+                            key={currentNodeElement?.POSITION}
+                            nodeElementProps={currentNodeElement}
+                            refreshNodeAndBranches={refreshNodeAndBranches}
+                            returnPreviousNodeElementProps={returnPreviousNodeElement}
                         />
             });
         }; 
     };  
 
-    // Cells elements. These element are the cells around the center cell of the mind map.
-    const listCells = () => {
-        //console.log(cells);
-        return cells.map((currentCell: Cell) => {
-             return <Cells
-                    key={currentCell.position}
-                    cellProps={currentCell}
-                    quantityCells={cells.length}
+    // Elements elements. These element are the elements around the center element of the mind map.
+    const listElements = () => {
+        //console.log(elements);
+        return elements.map((currentElement: IElement) => {
+             return <Element
+                    key={currentElement.POSITION}
+                    elementProps={currentElement}
+                    quantityElements={elements.length}
                     actionDoubleClick={doubleClick} 
                 />
         }); 
     };
 
-    // Buttons add elements. These elements are the buttons + between the cells.
-    const listbuttonAddCell = () => {
-        if (cells.length === 0) {
-            return <ButtonAddCell
+    // Buttons add elements. These elements are the buttons + between the elements.
+    const listbuttonAddElement = () => {
+        if (elements.length === 0) {
+            return <ButtonAddElement
                 key={1}
                 position={2}
-                quantityCells={cells.length+2}
-                stemCellProps={stemCell}
-                noCell={true}
-                cellProps={cells[0]}
-                refreshCells={refreshEcosystem}
-                parentTreeProps={parentTree}
+                quantityElements={elements.length+2}
+                nodeElementProps={nodeElement}
+                noElement={true}
+                elementProps={elements[0]}
+                refreshElements={refreshNodeAndBranches}
             />
         } else {
-            return cells.map((currentCell: Cell) => {
-                return <ButtonAddCell
-                        key={currentCell.position}
-                        position={currentCell.position}
-                        quantityCells={cells.length}
-                        stemCellProps={stemCell}
-                        noCell={false}
-                        cellProps= {currentCell}
-                        refreshCells={refreshEcosystem}
-                        parentTreeProps={parentTree}
+            return elements.map((currentElement: IElement) => {
+                return <ButtonAddElement
+                        key={currentElement.POSITION}
+                        position={currentElement.POSITION}
+                        quantityElements={elements.length}
+                        nodeElementProps={nodeElement}
+                        elementProps= {currentElement}
+                        refreshElements={refreshNodeAndBranches}
+                        noElement={false}
                     />
             });
         };
@@ -218,17 +232,17 @@ export const MindMapBuilder: React.FC = () => {
                     version='1.1' 
                     viewBox={svgViewBoxProps}
                 >
-                    {listStemCell()}
-                    {listCells()}
-                    {listbuttonAddCell()}
+                    {listNodeElement()}
+                    {listElements()}
+                    {listbuttonAddElement()}
                 </svg>
             </div>
 
             <div>
-                <button onClick={returnPreviousStemCell}>
-                    Previous stem cell
+                <button onClick={returnPreviousNodeElement}>
+                    Previous node
                 </button>
-                <button onClick={testDatabase}>
+                <button onClick={buttonTest}>
                     TEST
                 </button>
             </div>

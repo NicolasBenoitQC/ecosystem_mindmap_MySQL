@@ -1,4 +1,4 @@
-// package
+/* // package
 import 'mocha';
 import { expect } from 'chai';
 
@@ -160,4 +160,4 @@ describe('Methods of communication with the database.', async () => {
     });
 
 
-});
+}); */
