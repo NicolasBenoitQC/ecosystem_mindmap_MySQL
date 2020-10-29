@@ -14,3 +14,14 @@
     - change origin element (stem element).
 
 
+
+SQL dump back up
+bcrypt hashing password 
+Sequelize
+
+Question pour Mat:
+
+- Gestion d'arbres par représentation intervallaire. Un bon choix????
+         - beaucoup d'update ca pose probleme.
+- db cloud free 
+- Tu me conseils quoi pour les table des USER et password

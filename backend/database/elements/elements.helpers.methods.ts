@@ -180,7 +180,6 @@ export const updateIntervalsOutput = async ( intervalINputReferentNumber: number
         `;
 
     try {
-        console.log(intervalINputReferentNumber);
         const response = await new Promise((resolve, reject) => {
             const query:string =    `UPDATE ${process.env.TABLE_ELEMENT}
                                     SET INTERVAL_OUTPUT = INTERVAL_OUTPUT ${decreaseOrIncrease} ${numberReferenceForDecrease}

@@ -74,7 +74,7 @@ io.on('connection', async (socket) => {
             const createdElement: ICreateElement = await createElement(element);
             await fn(createdElement);
 
-            //console.log(createdElement)
+            console.log(createdElement)
         }      
     );
 

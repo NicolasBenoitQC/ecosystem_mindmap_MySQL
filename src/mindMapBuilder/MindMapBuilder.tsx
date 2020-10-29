@@ -6,13 +6,13 @@ import io from 'socket.io-client';
 import { IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
     IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
     IElement, IGetElement, ICreateTheOriginalElement,
-    } from '../elements.client.types';
-import { IMindMap } from '../mindMap.type';
+    } from '../elements/elements.client.types';
+import { IMindMap } from './mindMap.type';
 
 // Component React
-import { NodeElement } from '../nodeElement/NodeElement';
-import { Element } from '../element/Element';
-import { ButtonAddElement } from '../element/ButtonAddElement';
+import { NodeElement } from '../elements/nodeElement/NodeElement';
+import { Element } from '../elements/element/Element';
+import { ButtonAddElement } from '../elements/element/ButtonAddElement';
 
 // Local file
 import './MindMapBuilder.css';

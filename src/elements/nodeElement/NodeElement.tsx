@@ -13,8 +13,8 @@ import { IElement } from '../elements.client.types'
 
 // Local file
 import './NodeElement.css';
-import { ENDPOINT } from '../localhost';
-import { OriginX, OriginY, WidthSvgViewBox } from '../svg-setting';
+import { ENDPOINT } from '../../localhost';
+import { OriginX, OriginY, WidthSvgViewBox } from '../../svg-setting';
 
 // Typing of the properties of the stem element component.
 interface NodeElementProps {

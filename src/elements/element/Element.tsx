@@ -3,7 +3,7 @@ import React from 'react';
 
 // Local file
 import './Element.css'
-import { WidthSvgViewBox, HeightSvgViewBox } from '../svg-setting'
+import { WidthSvgViewBox, HeightSvgViewBox } from '../../svg-setting'
 import { IElement } from '../elements.client.types';
 
 // Typing of the properties of the elements component.

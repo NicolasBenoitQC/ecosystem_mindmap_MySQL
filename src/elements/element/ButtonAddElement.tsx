@@ -13,8 +13,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Local file
 import './Element.css'
-import { ENDPOINT } from '../localhost'; 
-import { WidthSvgViewBox, HeightSvgViewBox } from '../svg-setting'
+import { ENDPOINT } from '../../localhost'; 
+import { WidthSvgViewBox, HeightSvgViewBox } from '../../svg-setting'
 import { IElement } from '../elements.client.types'
 
 // Typing of the properties of the button add element.
@@ -108,7 +108,7 @@ export const ButtonAddElement: React.FC<ElementProps> = ({
         const socket = io.connect(ENDPOINT);
         socket.emit('create_new_element', createElement, (data:any) => {
             setDialogState(false);
-            refreshElements()
+            refreshElements();
         });
     };
 
