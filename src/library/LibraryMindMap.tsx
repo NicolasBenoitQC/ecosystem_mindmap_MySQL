@@ -2,11 +2,10 @@
 import React from 'react';
 
 // Typing interface
-import { ILibraryMindMap } from './table.type';
 
 // Local file
-import { TableToolBar } from './TableToolbarLibrary';
-import { TableContainerLibrary } from './TableContainerLibrary';
+import { LibraryTableToolbar } from './LibraryTableToolbar';
+import { LibraryTableContainer } from './LibraryTableContainer';
 
 // Material-UI
 import Paper from '@material-ui/core/Paper';
@@ -17,26 +16,23 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       width: '100%',
-      marginBottom: theme.spacing(2),
     },
   }),
 );
 
-// ---------------------------------------------------------------------------------------
-// Library MindMap. This element generate the page to manage and create mind map. 
-// ---------------------------------------------------------------------------------------
-export const LibraryMindMap: React.FC<ILibraryMindMap> = () => {
-
+/* ---------------------------------------------------------------------------------------
+ Library MindMap. This element generate the page to manage and create mind map. 
+--------------------------------------------------------------------------------------- */
+export const LibraryMindMap = (): JSX.Element => {
     const classes = useStyles();
-// ---------------------------------------------------------------------------------------------------
-//------------- Render -----------------------------------------------------------------------------    
-//------------------------------------------------------------------------------------------------------ 
+
+/* ------------- Render ----------------------------------------------------------------------------- */    
     return (
         <div>
             <Paper className= {classes.paper}>
-                <TableToolBar />
-                <TableContainerLibrary />
+                <LibraryTableToolbar />
+                <LibraryTableContainer />
             </Paper>
         </div>
-    )
+    );
 };

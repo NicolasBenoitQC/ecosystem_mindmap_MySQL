@@ -2,7 +2,6 @@
 import React from 'react';
 
 // Typing interface
-import { ITableHeader } from './table.type';
 
 // local file
 
@@ -38,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // ---------------------------------------------------------------------------------------
 // Table tool bar. 
 // ---------------------------------------------------------------------------------------
-export const TableHeader: React.FC<ITableHeader> = () => {
+export const LibraryTableHeader = (): JSX.Element => {
     const classes = useStyles();
 
     return (

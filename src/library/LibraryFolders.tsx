@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 
 // Typing interface
-import { IRows, IFileMindMap } from './table.type';
+import { IFolderProps, IFileMindMapRow } from './table.type';
 
 // local file
 import { LibraryFiles } from './LibraryFiles';
@@ -10,62 +10,58 @@ import { LibraryFiles } from './LibraryFiles';
 // Material-UI
 import { Box, Collapse, createStyles, 
     IconButton, makeStyles, Table, TableHead, 
-    Theme, TableRow, TableCell, Tooltip, Avatar, TableBody } from '@material-ui/core';
+    Theme, TableRow, TableCell, Tooltip, Avatar, 
+    TableBody,
+} from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { green,lightBlue } from '@material-ui/core/colors';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import AddIcon from '@material-ui/icons/Add';
 
-
 const useStyles = makeStyles((theme: Theme) =>
-        createStyles({
-            cellHead: {
-                fontSize: 25,
-                paddingLeft: 5,
-            },
-            avatarAddFolder: {
-                backgroundColor: lightBlue[500],
-            },
-            avatarAddMindmap: {
-                fontSize:"small",
-                margin: theme.spacing(2),
-                backgroundColor: green[500],
-            },
-            name: {
-                fontSize: 18,
-                fontWeight: "bold",
-                width:'20%',
-            },
-        }),
-    );
+    createStyles({
+        cellHead: {
+            fontSize: 25,
+            paddingLeft: 5,
+        },
+        avatarAddFolder: {
+            backgroundColor: lightBlue[500],
+        },
+        avatarAddMindmap: {
+            fontSize:"small",
+            margin: theme.spacing(2),
+            backgroundColor: green[500],
+        },
+        name: {
+            fontSize: 18,
+            fontWeight: "bold",
+            width:'20%',
+        },
+    }),
+);
 
-
-// ---------------------------------------------------------------------------------------
-// Table tool bar. 
-// ---------------------------------------------------------------------------------------
-interface props {
-    rowProps: IRows
-}
-
-//export default function LibraryFolders ():JSX.Element {
-export const LibraryFolders: React.FC<props> = ({rowProps}) => {
+/*  ---------------------------------------------------------------------------------------
+ Library folders generate the folders row 
+--------------------------------------------------------------------------------------- */
+export const LibraryFolders = (props: IFolderProps): JSX.Element => {
     const classes = useStyles();
     const [open,setOpen] = useState(false);
+    const row = props.rowProps;
+    const rowFiles: IFileMindMapRow[] = row.mindMap;
 
-    const rowFiles: IFileMindMap[] = rowProps.mindMap;
-
-    const rowFile = () => {
+    const fileRows = () => {
         return rowFiles.map((currentRow) => {
             return <LibraryFiles
-                        rowsProps={currentRow}
+                        rowProps={currentRow}
                         />
         });
-    } 
+    };
 
+/* ------------- Render ----------------------------------------------------------------------------- */  
     return (
         <React.Fragment>
-            <TableRow key={rowProps.folderName}>
+            <TableRow key={row.folderName}>
                 <TableCell>
                     <FolderOpenIcon/>
                 </TableCell>
@@ -74,8 +70,8 @@ export const LibraryFolders: React.FC<props> = ({rowProps}) => {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell className={classes.name}>{rowProps.folderName}</TableCell>
-                <TableCell >{rowProps.folderDescription}</TableCell>
+                <TableCell className={classes.name}>{row.folderName}</TableCell>
+                <TableCell >{row.folderDescription}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -99,7 +95,7 @@ export const LibraryFolders: React.FC<props> = ({rowProps}) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rowFile()} 
+                                    {fileRows()} 
                                 </TableBody>
                             </Table>
                         </Box>
@@ -107,8 +103,5 @@ export const LibraryFolders: React.FC<props> = ({rowProps}) => {
                 </TableCell>
             </TableRow>
         </React.Fragment>
-    )
+    );
 };
-
-
-/*  */

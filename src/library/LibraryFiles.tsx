@@ -2,35 +2,37 @@
 import React from 'react';
 
 // Typing interface
-import { IFileMindMap } from './table.type';
+import { IFileProps } from './table.type';
 
 // local file
 
 
 // Material-UI
-import { createStyles, IconButton, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, IconButton, makeStyles } from '@material-ui/core';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Tooltip from '@material-ui/core/Tooltip';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import EditIcon from '@material-ui/icons/Edit';
 
-const useStyles = makeStyles((theme: Theme) =>
-        createStyles({
-            name: {
-                fontSize: 18,
-                fontWeight: "bold",
-                width:'20%',
-            },
-        }),
-    );
+const useStyles = makeStyles(() =>
+    createStyles({
+        name: {
+            fontSize: 18,
+            fontWeight: "bold",
+            width:'20%',
+        },
+    }),
+);
 
-// ---------------------------------------------------------------------------------------
-// Table tool bar. 
-// ---------------------------------------------------------------------------------------
-export const LibraryFiles: React.FC<any>= ({rowsProps}) => {
+/*  ---------------------------------------------------------------------------------------
+ Library files generate the files row 
+--------------------------------------------------------------------------------------- */
+export const LibraryFiles = (props: IFileProps): JSX.Element => {
     const classes = useStyles();
-    const row = rowsProps;
+    const row = props.rowProps;
+
+/* ------------- Render ----------------------------------------------------------------------------- */  
     return (
         <TableRow>
             <TableCell>
@@ -47,10 +49,4 @@ export const LibraryFiles: React.FC<any>= ({rowsProps}) => {
             <TableCell>{row.description}</TableCell>
         </TableRow>
     )
-
 };
-
-/* 
-
-*/
-
