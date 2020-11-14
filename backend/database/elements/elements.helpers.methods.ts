@@ -1,4 +1,4 @@
-// dependencies.
+// Dependencies
 import dotenv from 'dotenv';
 
 // interface typing.
@@ -7,7 +7,7 @@ import { IDeletedElements, IElement, IInsertedElement,
     IupdatedPositionOfTheElements
 } from './elements.types';
 
-// local file.
+// App file.
 import { DbConnection } from '../database';
 
 dotenv.config();

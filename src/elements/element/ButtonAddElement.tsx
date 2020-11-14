@@ -1,8 +1,8 @@
-// Framwork
+// Dependencies
 import React, { useState } from 'react';
 import io from 'socket.io-client';
 
-// Framwork material-ui
+// Dependencies material-ui
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -11,7 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-// Local file
+// App file
 import './Element.css'
 import { ENDPOINT } from '../../localhost'; 
 import { WidthSvgViewBox, HeightSvgViewBox } from '../../svg-setting'

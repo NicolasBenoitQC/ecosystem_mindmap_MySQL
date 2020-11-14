@@ -1,4 +1,4 @@
-import { UniteTestDbConnection } from '../database/database';
+/* import { UniteTestDbConnection } from '../database/database';
 
 
 export async function deleteAllRow ():  Promise<any>  {
@@ -29,4 +29,4 @@ export async function deleteAllRow ():  Promise<any>  {
             message: error,
         }  
     }
-}
+} */

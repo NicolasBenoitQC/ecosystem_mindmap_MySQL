@@ -1,23 +1,3 @@
-export interface IRow  {
-    folderName: string;
-    folderDescription: string;
-    mindMap: IFileMindMapRow[];
-}
-
-export interface IFileMindMapRow  {
-    name: string;
-    description: string;
-}
-
-export interface IFolderProps {
-    rowProps: IRow
-}
-
-export interface IFileProps {
-    rowProps: IFileMindMapRow
-}
-
-
 export interface IFoldersAttributes {
     id?: number;
     name_folder: string;
@@ -34,3 +14,15 @@ export interface ICreatedFolder {
     _options?: {isNewRecord?: boolean, _schema?: any, _schemaDelimiter?: any},
     isNewRecord?: boolean
 }
+
+export interface IRequestDescription {
+    description: string,
+    argument: object,
+};
+
+export interface IInsertedFolder {
+    request_description: IRequestDescription;
+    error:boolean;
+    message_error?: any;
+    inserted_folder?: any;
+};

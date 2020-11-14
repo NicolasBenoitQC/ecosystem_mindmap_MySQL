@@ -3,7 +3,7 @@ import React from 'react';
 
 // Typing interface
 
-// Local file
+// App file
 import { LibraryTableToolbar } from './LibraryTableToolbar';
 import { LibraryTableContainer } from './LibraryTableContainer';
 

@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 // Typing interface
 import { IFolderProps, IFileMindMapRow } from './table.type';
 
-// local file
+// App file
 import { LibraryFiles } from './LibraryFiles';
 
 // Material-UI

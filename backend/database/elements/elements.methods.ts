@@ -1,4 +1,4 @@
-// dependencies.
+// Dependencies
 import dotenv from 'dotenv';
 
 // interface typing.
@@ -10,7 +10,7 @@ import { IGetElement, IGetElementsList,
     IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
  } from './elements.types';
 
-// local file.
+// App file.
 import { DbConnection } from '../database';
 import { getElementsListByParentID, insertNewElement, 
     updateIntervalsInput, updateIntervalsOutput,

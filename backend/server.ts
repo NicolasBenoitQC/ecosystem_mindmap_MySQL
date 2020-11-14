@@ -1,7 +1,12 @@
+// Dependencies
 import express from 'express';
-import { DatabaseConnection } from './database/database';
 import http from 'http';
 import socketio from 'socket.io';
+
+// interface typing
+
+// App file
+import { DatabaseConnection } from './database/database';
 import {getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
     getNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
     getElementByID, updatePropsElementByID, deleteElementAndAllChild,
@@ -12,13 +17,14 @@ import { IElement,IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
     IGetElement, IUpdatedElements, IDeleteElementAndAllChild,
     ICreateTheOriginalElement, ICreateElement,
  } from './database/elements/elements.types';
+import { createFolder } from './database/library/folders/folders.methods';
+import { ICreatedFolder, IFoldersAttributes } from './database/library/folders/folders.types';
 
-//import { updateIntervalsInput, updateIntervalsOutput } from './database/elements/elements.helpers.methods'
 
-const app = express();
-const port = process.env.PORT || 6000;
-
+const app: express.Application = express();
 app.use(express.json());
+
+const port = process.env.PORT || 6000;
 
 // --------- Database -----------
 DatabaseConnection();
@@ -49,7 +55,6 @@ io.on('connection', async (socket) => {
             //console.log(nodeAndItsBranches)
         }
     );
-
 
     socket.on('get_element_by_ID', 
         async (elementID: number, fn) => {
@@ -96,33 +101,17 @@ io.on('connection', async (socket) => {
         }
     );
 
-    socket.on('test',
-        async (fn) => {
-             /* const element: IElement = {
-                ID: 47,
-                TITLE:'title0',
-                DESCRIPTION: '',
-                POSITION: 0,
-                PARENT_ID: 0,
-                INTERVAL_INPUT: 20,
-                INTERVAL_OUTPUT: 25,
-                TREE_LEVEL: 0,
-                FILE_ID: 111,
-            };
+    socket.on('create_folder', async (folder: IFoldersAttributes, fn) => {
+        const createdFolder: ICreatedFolder = await createFolder(folder);
+        await fn(createdFolder);
 
-             const insertElement: any= await insertNewElement(element);
-            fn(insertElement);
-            //console.log(insertElement)
-            
-            
-            const deleteElem = await deleteElementAndAllChild(element);
-            fn(deleteElem); 
-            console.log(deleteElem)
-            const update = await updateIntervalsOutput(20, 111, '-');
-            fn(update);
-            console.log(update); */
+        //console.log(createdFolder.dataValues);
+    })
+    
+    socket.on('test', async () => {
+        
         }
-    )
+    );
 });
 
 server.listen(port, () => {

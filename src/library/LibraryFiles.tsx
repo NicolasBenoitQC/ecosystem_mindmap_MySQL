@@ -4,7 +4,7 @@ import React from 'react';
 // Typing interface
 import { IFileProps } from './table.type';
 
-// local file
+// App file
 
 
 // Material-UI

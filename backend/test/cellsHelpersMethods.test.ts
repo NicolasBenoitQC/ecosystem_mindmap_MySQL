@@ -1,8 +1,8 @@
-/* // package
+/* // Dependencies
 import 'mocha';
 import { expect } from 'chai';
 
-// Local file
+// App file
 import { UnitTestDatabaseConnection } from '../database/database';
 import { ElementModel, ParentsTreeOfTheElementModel } from '../database/elements/elements.model';
 import { getElementByProps_Id } from '../database/elements/elements.methods';

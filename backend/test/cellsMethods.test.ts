@@ -1,8 +1,8 @@
-/* // package
+/* // Dependencies
 import 'mocha';
 import { expect } from 'chai';
 
-// Local file
+// App file
 import { UnitTestDatabaseConnection } from '../database/database';
 import { newCell } from '../database/cells/cells.helpers.methods';
 import { createDefaultStemCell, updatePropsCellById, addCell, 

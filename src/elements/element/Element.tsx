@@ -1,7 +1,7 @@
-// Framwork
+// Dependencies
 import React from 'react';
 
-// Local file
+// App file
 import './Element.css'
 import { WidthSvgViewBox, HeightSvgViewBox } from '../../svg-setting'
 import { IElement } from '../elements.client.types';

@@ -1,4 +1,4 @@
-// Framwork
+// Dependencies
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
@@ -14,7 +14,7 @@ import { NodeElement } from '../elements/nodeElement/NodeElement';
 import { Element } from '../elements/element/Element';
 import { ButtonAddElement } from '../elements/element/ButtonAddElement';
 
-// Local file
+// App file
 import './MindMapBuilder.css';
 import { ENDPOINT } from '../localhost';
 import { WidthSvgViewBox, HeightSvgViewBox } from '../svg-setting';

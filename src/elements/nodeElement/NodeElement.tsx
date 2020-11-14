@@ -1,8 +1,8 @@
-// Framwork
+// Dependencies
 import React, { useState } from 'react';
 import io from 'socket.io-client';
 
-// Framwork material-ui
+// Dependencies material-ui
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,7 +11,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { IElement } from '../elements.client.types'
 
-// Local file
+// App file
 import './NodeElement.css';
 import { ENDPOINT } from '../../localhost';
 import { OriginX, OriginY, WidthSvgViewBox } from '../../svg-setting';

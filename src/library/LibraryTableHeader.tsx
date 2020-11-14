@@ -1,10 +1,12 @@
 //  Framwork
 import React from 'react';
+import io from 'socket.io-client';
 
 // Typing interface
+import { IFoldersAttributes, ICreatedFolder } from './table.type';
 
-// local file
-
+// App file
+import { ENDPOINT } from '../localhost';
 
 // Material-UI
 import { createStyles, IconButton, makeStyles, Theme } from '@material-ui/core';
@@ -37,8 +39,21 @@ const useStyles = makeStyles((theme: Theme) =>
 // ---------------------------------------------------------------------------------------
 // Table tool bar. 
 // ---------------------------------------------------------------------------------------
-export const LibraryTableHeader = (): JSX.Element => {
+export const LibraryTableHeader = (props: any): JSX.Element => {
     const classes = useStyles();
+
+    const newFolder: IFoldersAttributes = {
+        name_folder: 'socket io 2222',
+        description_folder: 'test des',
+        active: true,
+    };
+
+    const createFolder = async () => {
+        const socket = io.connect(ENDPOINT);
+        socket.emit('create_folder', newFolder,async (data: ICreatedFolder) => {
+            console.log('create folder !!!!!!!!');
+        })
+    };
 
     return (
         <TableHead>
@@ -46,7 +61,7 @@ export const LibraryTableHeader = (): JSX.Element => {
                 <TableCell></TableCell>
                 <TableCell width='1%' padding='none'>
                     <Tooltip title='add folder' placement="left">
-                        <IconButton aria-label='add folder'>
+                        <IconButton aria-label='add folder' onClick={props.handle_Drawer_Open}>
                             <Avatar className={classes.avatarAddFolder}>
                                 <AddIcon aria-label="add folder"/>
                             </Avatar>
