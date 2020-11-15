@@ -74,7 +74,7 @@ export const ButtonAddElement: React.FC<ElementProps> = ({
         setDescription(event.target.value);
     };
 
-    // Fuction, set variable createElement when a user leaves an input field (textfield).
+    // Function, set variable createElement when a user leaves an input field (textfield).
     const handleOnBlur = () => {
         if (noElement === true) {
             setCreateElement({ 

@@ -7,22 +7,42 @@ export interface IFoldersAttributes {
     active: boolean;
 };
 
-export interface ICreatedFolder {
-    dataValues?: IFoldersAttributes,
-    _previousDataValues?: IFoldersAttributes,
-    _changed?: any,
-    _options?: {isNewRecord?: boolean, _schema?: any, _schemaDelimiter?: any},
-    isNewRecord?: boolean
-}
-
 export interface IRequestDescription {
     description: string,
-    argument: object,
+    argument: any,
 };
 
 export interface IInsertedFolder {
     request_description: IRequestDescription;
     error:boolean;
     message_error?: any;
-    inserted_folder?: any;
+    new_folder?: any;
+};
+
+/*-----------------------------------------------------------------
+------- INTERFACE SEQUELIZE --------------------------------------- 
+-----------------------------------------------------------------*/
+
+export interface IErrorsNewInterface {
+    ValidationErrorItem: {
+        message: string,
+        type: string,
+        path: string,
+        value: any,
+        origin: string,
+        instance: [any],
+        validatorKey: string,
+        validatorName: any,
+        validatorArgs: [any],
+    };
+};
+
+export interface INewFolderInstance {
+    dataValues?: IFoldersAttributes,
+    _previousDataValues?: IFoldersAttributes,
+    _changed?: any,
+    _options?: {isNewRecord?: boolean, _schema?: any, _schemaDelimiter?: any},
+    isNewRecord?: boolean,
+    name?: string,
+    errors?: IErrorsNewInterface 
 };

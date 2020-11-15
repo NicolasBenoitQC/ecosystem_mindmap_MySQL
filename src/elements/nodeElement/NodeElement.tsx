@@ -71,7 +71,7 @@ export const NodeElement: React.FC<NodeElementProps> = ({
         setDescription(event.target.value);
     };
 
-    // Fuction, set variable updateNodeElement when a user leaves an input field (textfield).
+    // Function, set variable updateNodeElement when a user leaves an input field (textfield).
     const handleOnBlur = () => {
         setUpdateNodeElement({
             ID: nodeElementProps.ID,

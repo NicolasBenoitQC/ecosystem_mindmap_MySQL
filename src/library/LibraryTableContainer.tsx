@@ -1,9 +1,9 @@
 //  Framwork
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 
 // Typing interface
-import { IFoldersAttributes, ICreatedFolder, IRow } from './table.type';
+import { IFoldersAttributes, IInsertedFolder, IRow } from './table.type';
 
 // App file
 import { LibraryTableHeader } from './LibraryTableHeader';
@@ -18,6 +18,7 @@ import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Divider from '@material-ui/core/Divider';
@@ -72,45 +73,20 @@ const rows: IRow[] = [
     },      
   ];
 
-const newFolder: IFoldersAttributes = {
-    name_folder: 'socket io 2222',
-    description_folder: 'test des',
-    active: true,
-};
 
 const drawerWidth = 100;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
-    appBar: {
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    appBarShift: {
-      width: `100%`,
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginBottom: '100%',
-    },
-    title: {
-      flexGrow: 1,
-    },
-    hide: {
-      display: 'none',
-    },
     drawer: {
       width: '100%',
+      //height: '50%',
       flexShrink: 0,
     },
     drawerPaper: {
       width: '100%',
+      //height: '50%',
+      maxHeight: '60%',
     },
     drawerHeader: {
       display: 'flex',
@@ -127,33 +103,13 @@ const useStyles = makeStyles((theme: Theme) =>
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
     },
-    button: {
-        display: 'flex',
-        alignItems: 'center',
-        padding: theme.spacing(50),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-        justifyContent: 'flex-start',
-    },
     box: {
-        display: 'flex',
-        flexDirection: 'row-reverse', 
+       justify: 'flex-start',
+       alignItems: 'flex-start',
     },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      marginRight: -drawerWidth,
-    },
-    contentShift: {
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginRight: 0,
+    buttonAddFolder: {
+      marginBottom: '6px',
+      marginLeft: '16px',
     },
   }),
 );
@@ -164,34 +120,61 @@ const useStyles = makeStyles((theme: Theme) =>
 --------------------------------------------------------------------------------------- */
 export const LibraryTableContainer = (): JSX.Element => {
     const classes = useStyles();
-    const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [nameFolder, setNameFolder] = useState<string>('');
     const [descriptionFolder, setDescriptionFolder] = useState<string>('');
     const [createFolder, setCreateFolder] = useState<IFoldersAttributes>();
+    const [checkTitleEmpty, setCheckTitleEmpty] = useState<boolean>(false);
+    const [helperTextOfTitle, setHelperTextOfTitle] = useState<string>('');
+    const [trigger, setTrigger] = useState<number>(0);
+    const inputRef = useRef<any>();
 
+    useEffect(() => {
+    },[]);
+
+    // use to fix bug auto focus textfield title when the drawer is open.
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+  
+      return () => {
+        clearTimeout(timeout);
+      };
+    },[open]);
+
+    // actualise when the new folder is created.
+    useEffect(() => {
+        resetValues()
+    },[trigger]);
+
+    // Update the variable 'open' for open the drawer to edit the props of the new folder.
     const handleDrawerOpen = async () => {
         setOpen(true);
     };
     
+    // Update the variable 'open' for close the drawer.
     const handleDrawerClose = async () => {
         setOpen(false);
+
     };
 
-    // Function, update the tilte when event is detected in the textfield 'Title'.
+    // Update the tilte when event is detected in the textfield 'Title'.
     const handleChangeTitle = async (event:any) => {
         event.preventDefault();
         let val: string = event.target.value;
         setNameFolder(val);
+        setHelperTextOfTitle(``);
+        setCheckTitleEmpty(false);
     };
 
-    // Function, update the description when event is detected in the textfield 'Description'.
+    // Update the description when event is detected in the textfield 'Description'.
     const handleChangeDescription = async (event:any) => {
         event.preventDefault();
         setDescriptionFolder(event.target.value);
     };
 
-    // Fuction, set variable createElement when a user leaves an input field (textfield).
+    // Set variable createFolder when a user leaves an input field (textfield).
     const handleOnBlur = async () => {
         setCreateFolder({ 
             name_folder: nameFolder,
@@ -200,22 +183,37 @@ export const LibraryTableContainer = (): JSX.Element => {
         });
     };
 
+    // Reset values when the adding folder is completed.
     const resetValues = async () => {
         setNameFolder('');
         setDescriptionFolder(''); 
+        setCreateFolder({ 
+          name_folder: '',
+          description_folder: '',
+          active: true
+        });
+        setHelperTextOfTitle('');
+        setCheckTitleEmpty(false);
     };
 
-    const createNewFolder = async () => {
-        const socket = io.connect(ENDPOINT);
-        socket.emit('create_folder', createFolder,async (data: ICreatedFolder) => {
-            await resetValues();
-            await handleOnBlur();
-            await handleDrawerClose();
-
-            console.log('create folder !!!!!!!!');
-        })
+    // Request to database to add new folder.
+    const addNewFolder = async () => {
+        if (createFolder?.name_folder) {
+          const socket = io.connect(ENDPOINT);
+          socket.emit('create_folder', createFolder,async (data: IInsertedFolder) => {
+              setTrigger(+1);
+              await handleOnBlur();
+              await handleDrawerClose();
+              console.log(data);
+          });
+        } else {
+          setHelperTextOfTitle(`This field is required, it's should be not empty. 
+                                  Please entry the title of the folder you want create.`);
+          setCheckTitleEmpty(true);
+        }    
     };
     
+    // Function for render all folder row 
     const folderRows = () => {
         return rows.map((currentFolderRow) => {
             return <LibraryFolders
@@ -245,12 +243,13 @@ export const LibraryTableContainer = (): JSX.Element => {
             }}>
                 <div className={classes.drawerHeader}>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                      <CloseIcon/>
                     </IconButton>
                 </div>
                 <Divider />
                 <form >
                     <TextField
+                        inputRef={inputRef}
                         className={classes.textField}
                         id='filled-basic'
                         label='Title'
@@ -258,11 +257,11 @@ export const LibraryTableContainer = (): JSX.Element => {
                         onChange={handleChangeTitle}
                         InputLabelProps={{shrink: true}}
                         onBlur={handleOnBlur}
-                        autoFocus={true}
                         style={{ width: '50%' }}
                         required={true}
-                    />
-                    <br/>
+                        helperText={helperTextOfTitle}
+                        error={checkTitleEmpty}
+                      />
                     <TextField
                         className={classes.textField}
                         id='filled-basic'
@@ -275,17 +274,12 @@ export const LibraryTableContainer = (): JSX.Element => {
                         margin='normal'
                         rowsMax='23'
                     />
-                    <br />
                 </form>
                 <div style={{ width: '100%' }}>
                     <Box className={classes.box}>
-                        <Button  onClick={handleDrawerClose} color="primary">
-                            Cancel
+                        <Button className={classes.buttonAddFolder} onClick={addNewFolder} color="primary">
+                            Add folder
                         </Button>
-                        <Button onClick={createNewFolder} color="primary">
-                            Create folder
-                        </Button>
-                        <div style={{ width: '50%' }}/>
                     </Box>
                 </div>
             </Drawer>

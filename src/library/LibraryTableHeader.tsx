@@ -1,12 +1,9 @@
 //  Framwork
 import React from 'react';
-import io from 'socket.io-client';
 
 // Typing interface
-import { IFoldersAttributes, ICreatedFolder } from './table.type';
 
 // App file
-import { ENDPOINT } from '../localhost';
 
 // Material-UI
 import { createStyles, IconButton, makeStyles, Theme } from '@material-ui/core';
@@ -41,19 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
 // ---------------------------------------------------------------------------------------
 export const LibraryTableHeader = (props: any): JSX.Element => {
     const classes = useStyles();
-
-    const newFolder: IFoldersAttributes = {
-        name_folder: 'socket io 2222',
-        description_folder: 'test des',
-        active: true,
-    };
-
-    const createFolder = async () => {
-        const socket = io.connect(ENDPOINT);
-        socket.emit('create_folder', newFolder,async (data: ICreatedFolder) => {
-            console.log('create folder !!!!!!!!');
-        })
-    };
 
     return (
         <TableHead>

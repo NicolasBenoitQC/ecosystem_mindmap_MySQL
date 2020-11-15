@@ -27,10 +27,14 @@ export interface IFoldersAttributes {
     active: boolean;
 };
 
-export interface ICreatedFolder {
-    dataValues?: IFoldersAttributes,
-    _previousDataValues?: IFoldersAttributes,
-    _changed?: any,
-    _options?: {isNewRecord?: boolean, _schema?: any, _schemaDelimiter?: any},
-    isNewRecord?: boolean
-}
+export interface IRequestDescription {
+    description: string,
+    argument: any,
+};
+
+export interface IInsertedFolder {
+    request_description: IRequestDescription;
+    error:boolean;
+    message_error?: any;
+    new_folder?: any;
+};

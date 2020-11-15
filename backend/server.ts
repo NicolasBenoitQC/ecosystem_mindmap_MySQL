@@ -18,7 +18,7 @@ import { IElement,IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
     ICreateTheOriginalElement, ICreateElement,
  } from './database/elements/elements.types';
 import { createFolder } from './database/library/folders/folders.methods';
-import { ICreatedFolder, IFoldersAttributes } from './database/library/folders/folders.types';
+import { IFoldersAttributes, IInsertedFolder } from './database/library/folders/folders.types';
 
 
 const app: express.Application = express();
@@ -102,16 +102,16 @@ io.on('connection', async (socket) => {
     );
 
     socket.on('create_folder', async (folder: IFoldersAttributes, fn) => {
-        const createdFolder: ICreatedFolder = await createFolder(folder);
+        const createdFolder: IInsertedFolder = await createFolder(folder);
         await fn(createdFolder);
 
-        //console.log(createdFolder.dataValues);
+        console.log(createdFolder);
     })
     
-    socket.on('test', async () => {
+    socket.on('test', async (folder , fn) => {
         
-        }
-    );
+
+    });
 });
 
 server.listen(port, () => {

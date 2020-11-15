@@ -1,20 +1,37 @@
 // Dependencies
 
 // interface typing
-import { ICreatedFolder, IFoldersAttributes } from './folders.types';
+import { IFoldersAttributes, IInsertedFolder, IRequestDescription, INewFolderInstance
+   } from './folders.types';
 
 // App file
 import { FolderModel } from '../../database';
 
-export const createFolder = async (newFolder: IFoldersAttributes) => {
-  const jane = FolderModel.build(newFolder);
+export const createFolder = async (newFolderProps: IFoldersAttributes): Promise<IInsertedFolder>  => {
+  
+  const requestDescription: IRequestDescription = {
+    description: `insert new folder in the database.`,
+    argument: newFolderProps,
+  };
+
   try {
-    const newFolder: ICreatedFolder = await jane.save();
-    console.log('Created folder : ', newFolder.dataValues);
-    return newFolder;
+    const newFolderInstanceInserted: INewFolderInstance  = await FolderModel.create(newFolderProps);
+
+    return {
+      error: false,
+      request_description: requestDescription,
+      new_folder: newFolderInstanceInserted?.dataValues,
+    }
+
   } catch (error) {
-    console.error(`Can't create user : `, error);
+    return {
+      error: true,
+      request_description: requestDescription,
+      message_error: error
+    };
   };
 };
 
-
+export const getFolderList = async () => {
+  
+}
