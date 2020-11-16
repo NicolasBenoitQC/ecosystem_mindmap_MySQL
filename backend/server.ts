@@ -4,6 +4,13 @@ import http from 'http';
 import socketio from 'socket.io';
 
 // interface typing
+import { IFoldersAttributes, IGetFoldersList, IInsertedFolder } from './database/library/folders/folders.types';
+import { IFilesAttributes, IInsertedFile, IGetFilesList } from './database/library/files/files.types';
+import { IElement,IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
+    IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
+    IGetElement, IUpdatedElements, IDeleteElementAndAllChild,
+    ICreateTheOriginalElement, ICreateElement,
+ } from './database/elements/elements.types';
 
 // App file
 import { DatabaseConnection } from './database/database';
@@ -12,14 +19,8 @@ import {getNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
     getElementByID, updatePropsElementByID, deleteElementAndAllChild,
     createTheOriginalElement, createElement
 } from './database/elements/elements.methods'
-import { IElement,IGetNodeAndItsBranchesFromLevelZeroOfTheTreeStructure,
-    IGetNodeAndItsBranchesFromLevelGreaterThanZeroOfTheTreeStructure,
-    IGetElement, IUpdatedElements, IDeleteElementAndAllChild,
-    ICreateTheOriginalElement, ICreateElement,
- } from './database/elements/elements.types';
-import { createFolder } from './database/library/folders/folders.methods';
-import { IFoldersAttributes, IInsertedFolder } from './database/library/folders/folders.types';
-
+import { createFolder, getFoldersList } from './database/library/folders/folders.methods';
+import { createFile, getFilesList } from './database/library/files/files.methods';
 
 const app: express.Application = express();
 app.use(express.json());
@@ -106,11 +107,29 @@ io.on('connection', async (socket) => {
         await fn(createdFolder);
 
         console.log(createdFolder);
-    })
-    
-    socket.on('test', async (folder , fn) => {
-        
+    });
 
+    socket.on('create_file', async (file: IFilesAttributes, fn) => {
+        const createdFile: IInsertedFile = await createFile(file);
+        await fn(createdFile);
+
+        console.log(createdFile);
+    });
+
+    socket.on('get_folders_list', async (fn) => {
+        const foldersList: IGetFoldersList = await getFoldersList();
+        await fn(foldersList);
+    });
+
+    socket.on('get_files_list', async (fn) => {
+        const filesList: IGetFilesList = await getFilesList();
+        await fn(filesList);
+    });
+
+    socket.on('test', async (fn) => {
+        const get_Folders_List: any = await getFoldersList();
+
+        await fn(get_Folders_List);
     });
 });
 

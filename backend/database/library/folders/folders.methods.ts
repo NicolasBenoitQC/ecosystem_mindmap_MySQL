@@ -1,8 +1,10 @@
 // Dependencies
 
 // interface typing
-import { IFoldersAttributes, IInsertedFolder, IRequestDescription, INewFolderInstance
+import { IFoldersAttributes, IInsertedFolder, INewFolderInstance,
+          IGetFoldersList
    } from './folders.types';
+import { IRequestDescription } from '../../types';
 
 // App file
 import { FolderModel } from '../../database';
@@ -27,11 +29,32 @@ export const createFolder = async (newFolderProps: IFoldersAttributes): Promise<
     return {
       error: true,
       request_description: requestDescription,
-      message_error: error
+      message_error: error,
     };
   };
 };
 
-export const getFolderList = async () => {
+export const getFoldersList = async (): Promise<IGetFoldersList> => {
   
+  const requestDescription: IRequestDescription = {
+    description: `get list of the folders.`,
+    argument: null,
+  };
+
+  try {
+    const foldersList: any = await FolderModel.findAll();
+
+    return {
+      error: false,
+      request_description: requestDescription,
+      list_folders: foldersList,
+    };
+
+  } catch (error) {
+    return {
+      error: true,
+      request_description: requestDescription,
+      message_error: error,
+    };
+  };
 }

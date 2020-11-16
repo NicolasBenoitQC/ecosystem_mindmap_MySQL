@@ -1,37 +1,37 @@
 // interface typing
 import {IRequestDescription, IErrorsNewInterface} from '../../../database/types';
 
-
-export interface IFoldersAttributes {
+export interface IFilesAttributes {
     id?: number;
-    name_folder: string;
-    description_folder?: string
+    name_file: string;
+    description_file?: string
     createdAt?: Date;
     updatedAt?: Date;
+    folder_id: number;
     active: boolean;
 };
 
-export interface IInsertedFolder {
+export interface IInsertedFile {
     request_description: IRequestDescription;
     error:boolean;
     message_error?: any;
-    new_folder?: any;
+    new_file?: any;
 };
 
-export interface IGetFoldersList {
+export interface IGetFilesList {
     request_description: IRequestDescription;
     error:boolean;
     message_error?: any;
-    list_folders?: IFoldersAttributes[];
+    list_files?: IFilesAttributes[];
 };
 
 /*-----------------------------------------------------------------
 ------- INTERFACE SEQUELIZE --------------------------------------- 
 -----------------------------------------------------------------*/
 
-export interface INewFolderInstance {
-    dataValues?: IFoldersAttributes,
-    _previousDataValues?: IFoldersAttributes,
+export interface INewFileInstance {
+    dataValues?: IFilesAttributes,
+    _previousDataValues?: IFilesAttributes,
     _changed?: any,
     _options?: {isNewRecord?: boolean, _schema?: any, _schemaDelimiter?: any},
     isNewRecord?: boolean,

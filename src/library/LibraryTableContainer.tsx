@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 
 // Typing interface
-import { IFoldersAttributes, IInsertedFolder, IRow } from './table.type';
+import { IFoldersAttributes, IInsertedFolder, IGetFoldersList, IRow } from './table.type';
 
 // App file
 import { LibraryTableHeader } from './LibraryTableHeader';
@@ -73,9 +73,6 @@ const rows: IRow[] = [
     },      
   ];
 
-
-const drawerWidth = 100;
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
@@ -120,7 +117,8 @@ const useStyles = makeStyles((theme: Theme) =>
 --------------------------------------------------------------------------------------- */
 export const LibraryTableContainer = (): JSX.Element => {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+    const [foldersList, setFoldersList] = useState<IFoldersAttributes[] | undefined>([])
+    const [open, setOpen] = useState(false);
     const [nameFolder, setNameFolder] = useState<string>('');
     const [descriptionFolder, setDescriptionFolder] = useState<string>('');
     const [createFolder, setCreateFolder] = useState<IFoldersAttributes>();
@@ -212,6 +210,15 @@ export const LibraryTableContainer = (): JSX.Element => {
           setCheckTitleEmpty(true);
         }    
     };
+
+    // get folders list
+    const getFoldersList = async () => {
+      const socket = io.connect(ENDPOINT);
+      socket.emit('get_folders_list', (data: IGetFoldersList) => {
+        setFoldersList(data.list_folders)
+        console.log(data.list_folders);
+      })
+    };
     
     // Function for render all folder row 
     const folderRows = () => {
@@ -283,6 +290,13 @@ export const LibraryTableContainer = (): JSX.Element => {
                     </Box>
                 </div>
             </Drawer>
+            <div style={{ width: '100%' }}>
+                    <Box className={classes.box}>
+                        <Button onClick={getFoldersList} color="primary">
+                            TEST
+                        </Button>
+                    </Box>
+                </div>
         </TableContainer>
     );
 };

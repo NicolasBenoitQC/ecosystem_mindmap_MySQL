@@ -4,11 +4,10 @@ import mysql from 'mysql';
 import { Sequelize } from "sequelize";
 
 // interface typing
-import { IFoldersAttributes } from './library/folders/folders.types';
 
 // App file
 import { folderModelAttributes } from './library/folders/folders.model';
-import { createFolder } from './library/folders/folders.methods';
+import { fileModelAttributes } from './library/files/files.model';
 
 dotenv.config();
 
@@ -54,14 +53,25 @@ export const DatabaseConnection = async () => {
                             console.error(`Connection has NOT established : `, err);
                         });
                         
-        // create table if not exists 'Users'
+        // create table 'Folder' if not exists 
         await FolderModel.sync()
-                        .then(() => {
-                            //console.log(`create table 'Folder' if not exists`);
+                        .then((res) => {
+                            //console.log(`Table ${res} created.`);
                         })
                         .catch((err:any) => {
                             console.error(`Error to create table 'Folder' if not exists `, err);
                         });
+
+        // create table 'File' if not exists 
+        await FileModel.sync()
+                        .then((res) => {
+                            //console.log(`Table ${res} created.`);
+                        })
+                        .catch((err:any) => {
+                            console.error(`Error to create table 'File' if not exists `, err);
+                        });
+
+
     } catch (error) {
         console.error('Unable to connect to the database: ', error);
     };
@@ -71,10 +81,6 @@ export const CloseDatabase = () => {
     sequelize.close();
 };
 
+// Define all abstraction model to represents a table in your database.
 export const FolderModel = sequelize.define('Folder', folderModelAttributes);
-
-const newFolder: IFoldersAttributes = {
-    name_folder: 'nico',
-    description_folder: 'test des',
-    active: true,
-};
+export const FileModel = sequelize.define('File', fileModelAttributes);
