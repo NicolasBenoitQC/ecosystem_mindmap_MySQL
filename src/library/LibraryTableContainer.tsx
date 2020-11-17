@@ -128,6 +128,7 @@ export const LibraryTableContainer = (): JSX.Element => {
     const inputRef = useRef<any>();
 
     useEffect(() => {
+      getFoldersList();
     },[]);
 
     // use to fix bug auto focus textfield title when the drawer is open.
@@ -216,13 +217,13 @@ export const LibraryTableContainer = (): JSX.Element => {
       const socket = io.connect(ENDPOINT);
       socket.emit('get_folders_list', (data: IGetFoldersList) => {
         setFoldersList(data.list_folders)
-        console.log(data.list_folders);
+        //console.log(data.list_folders);
       })
     };
     
     // Function for render all folder row 
     const folderRows = () => {
-        return rows.map((currentFolderRow) => {
+        return foldersList?.map((currentFolderRow) => {
             return <LibraryFolders
                         rowProps= {currentFolderRow}
                     />
@@ -291,12 +292,12 @@ export const LibraryTableContainer = (): JSX.Element => {
                 </div>
             </Drawer>
             <div style={{ width: '100%' }}>
-                    <Box className={classes.box}>
-                        <Button onClick={getFoldersList} color="primary">
-                            TEST
-                        </Button>
-                    </Box>
-                </div>
+                <Box className={classes.box}>
+                    <Button onClick={getFoldersList} color="primary">
+                        TEST
+                    </Button>
+                </Box>
+            </div>
         </TableContainer>
     );
 };

@@ -3,8 +3,8 @@ import React, {useState, useRef, useEffect} from 'react';
 import io from 'socket.io-client';
 
 // Typing interface
-import { IFolderProps, IFileMindMapRow, IFilesAttributes,
-    IInsertedFile, 
+import { IFolderProps, IFoldersAttributes, IFilesAttributes,
+    IInsertedFile, IGetFilesList,
 } from './table.type';
 
 // App file
@@ -93,9 +93,10 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
     const [openFolder, setOpenFolder] = useState(false);
     const [open,setOpen] = useState(false);
     const row = props.rowProps;
-    const rowFiles: IFileMindMapRow[] = row.mindMap;
+    //const rowFiles: IFileMindMapRow[] = row.mindMap;
 
-
+    const [folder, setFolder] = useState<IFoldersAttributes>(props.rowProps);
+    const [filesList, setFilesList] = useState<IFilesAttributes[] | undefined>([])
     const [nameFile, setNameFile] = useState<string>('');
     const [descriptionFile, setDescriptionFile] = useState<string>('');
     const [createFile, setCreateFile] = useState<IFilesAttributes>();
@@ -105,6 +106,7 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
     const inputRef = useRef<any>();
 
     useEffect(() => {
+        getFilesList();
     },[]);
 
     // use to fix bug auto focus textfield title when the drawer is open.
@@ -120,7 +122,7 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
 
     // actualise when the new file is created.
     useEffect(() => {
-        resetValues()
+        resetValues();
     },[trigger]);
 
     // Update the variable 'open' for open the drawer to edit the props of the new file.
@@ -155,7 +157,7 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
             name_file: nameFile,
             description_file: descriptionFile,
             active: true,
-            folder_id: 1,
+            folder_id: folder.id,
         });
     };
 
@@ -167,7 +169,7 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
           name_file: '',
           description_file: '',
           active: true,
-          folder_id: 1,
+          folder_id: folder.id,
 
         });
         setHelperTextOfTitle('');
@@ -191,9 +193,18 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
         }    
     };
 
+    // get files list
+    const getFilesList = async () => {
+        const socket = io.connect(ENDPOINT);
+        socket.emit('get_files_list', folder.id,  (data: IGetFilesList) => {
+          setFilesList(data.list_files);
+          setTrigger(+1);
+          //console.log(data.list_files);
+        })
+    };
 
     const fileRows = () => {
-        return rowFiles.map((currentRow) => {
+        return filesList?.map((currentRow) => {
             return <LibraryFiles
                         rowProps={currentRow}
                         />
@@ -203,7 +214,7 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
 /* ------------- Render ----------------------------------------------------------------------------- */  
     return (
         <React.Fragment>
-            <TableRow id={`Header_of_folder_${row.folderName}`}>
+            <TableRow id={`Header_of_folder_${folder.name_folder}`}>
                 <TableCell>
                     <FolderOpenIcon/>
                 </TableCell>
@@ -212,10 +223,10 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
                         {openFolder ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell className={classes.name}>{row.folderName}</TableCell>
-                <TableCell >{row.folderDescription}</TableCell>
+                <TableCell className={classes.name}>{folder.name_folder}</TableCell>
+                <TableCell >{folder.description_folder}</TableCell>
             </TableRow>
-            <TableRow key={`row_${row.folderName}`}>
+            <TableRow key={`row_${folder.name_folder}`}>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={openFolder} timeout="auto" unmountOnExit>
                         <Box margin={1}>
@@ -294,6 +305,13 @@ export const LibraryFolders = (props: IFolderProps): JSX.Element => {
                     </Box>
                 </div>
             </Drawer>
+            <div style={{ width: '100%' }}>
+                <Box >
+                    <Button onClick={getFilesList} color="primary">
+                        TEST get file
+                    </Button>
+                </Box>
+            </div>
         </React.Fragment>
     );
 };

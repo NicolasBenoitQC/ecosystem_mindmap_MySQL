@@ -34,7 +34,7 @@ export const LibraryFiles = (props: IFileProps): JSX.Element => {
 
 /* ------------- Render ----------------------------------------------------------------------------- */  
     return (
-        <TableRow id={row.name}>
+        <TableRow id={row.name_file}>
             <TableCell>
                 <AssignmentIcon/>
             </TableCell>
@@ -45,8 +45,8 @@ export const LibraryFiles = (props: IFileProps): JSX.Element => {
                     </IconButton>
                 </Tooltip>
             </TableCell>
-            <TableCell className={classes.name}>{row.name}</TableCell>
-            <TableCell>{row.description}</TableCell>
+            <TableCell className={classes.name}>{row.name_file}</TableCell>
+            <TableCell>{row.description_file}</TableCell>
         </TableRow>
     )
 };

@@ -35,7 +35,7 @@ export const createFile = async (newFileProps: IFilesAttributes): Promise<IInser
     };
 };
 
-export const getFilesList = async (): Promise<IGetFilesList> => {
+export const getFilesList = async (folderId: number): Promise<IGetFilesList> => {
   
     const requestDescription: IRequestDescription = {
       description: `get list of the files.`,
@@ -43,7 +43,11 @@ export const getFilesList = async (): Promise<IGetFilesList> => {
     };
   
     try {
-      const filesList: any = await FileModel.findAll();
+      const filesList: any = await FileModel.findAll({
+        where: {
+          folder_id: folderId
+        }
+      });
   
       return {
         error: false,

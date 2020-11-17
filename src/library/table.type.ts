@@ -29,6 +29,10 @@ export interface IGetFoldersList {
     list_folders?: IFoldersAttributes[];
 };
 
+export interface IFolderProps {
+    rowProps: IFoldersAttributes
+}
+
 /*-------------------------------- 
 ----- FILES ---------------------- 
 --------------------------------*/
@@ -38,7 +42,7 @@ export interface IFilesAttributes {
     description_file?: string
     createdAt?: Date;
     updatedAt?: Date;
-    folder_id: number;
+    folder_id?: number;
     active: boolean;
 };
 
@@ -54,6 +58,10 @@ export interface IGetFilesList {
     error:boolean;
     message_error?: any;
     list_files?: IFilesAttributes[];
+};
+
+export interface IFileProps {
+    rowProps: IFilesAttributes
 };
 
 
@@ -72,12 +80,8 @@ export interface IFileMindMapRow  {
     description: string;
 }
 
-export interface IFolderProps {
-    rowProps: IRow
-}
 
-export interface IFileProps {
-    rowProps: IFileMindMapRow
-}
+
+
 
 

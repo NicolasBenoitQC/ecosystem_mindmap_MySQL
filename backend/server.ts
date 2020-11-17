@@ -121,8 +121,8 @@ io.on('connection', async (socket) => {
         await fn(foldersList);
     });
 
-    socket.on('get_files_list', async (fn) => {
-        const filesList: IGetFilesList = await getFilesList();
+    socket.on('get_files_list', async (folderId:number, fn) => {
+        const filesList: IGetFilesList = await getFilesList(folderId);
         await fn(filesList);
     });
 
